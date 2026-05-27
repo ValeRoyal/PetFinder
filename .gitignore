@@ -56,6 +56,7 @@ target/
 
 # Maven Wrapper logs
 .mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.jar
 
 # =========================
 # GRADLE
