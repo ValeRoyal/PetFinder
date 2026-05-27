@@ -10,18 +10,12 @@ const roleSelect = document.querySelector('#roleSelect');
 const statusEl = document.querySelector('#formStatus');
 const modeLabel = document.querySelector('#authModeLabel');
 const title = document.querySelector('#authTitle');
-let currentMode = 'register';
+const submitBtn = document.querySelector('.boton-submit');
 
-document.querySelectorAll('[data-scroll-target]').forEach((button) => {
-  button.addEventListener('click', () => {
-    animateButton(button);
-    document.querySelector(button.dataset.scrollTarget)?.scrollIntoView({ behavior: 'smooth' });
-  });
-});
+let currentMode = 'register';
 
 document.querySelectorAll('[data-open-auth]').forEach((button) => {
   button.addEventListener('click', () => {
-    animateButton(button);
     openAuth(button.dataset.openAuth, button.dataset.role || 'adopter');
   });
 });
@@ -31,6 +25,11 @@ document.querySelectorAll('[data-close-auth]').forEach((button) => {
 });
 
 roleSelect.addEventListener('change', () => updateRoleFields(roleSelect.value));
+
+modal.addEventListener('cancel', (e) => {
+  e.preventDefault();
+  modal.close();
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -52,31 +51,36 @@ form.addEventListener('submit', async (event) => {
 
     showStatus(
       currentMode === 'login'
-        ? 'Sesion validada correctamente.'
+        ? 'Sesión validada correctamente.'
         : 'Registro enviado correctamente.',
       'ok'
     );
+
+    // Si quieres cerrar automático al éxito:
+    // setTimeout(() => modal.close(), 700);
   } catch (error) {
-    showStatus('No se pudo conectar con el servicio. Revisa que el microservicio este levantado.', 'error');
+    showStatus('No se pudo conectar con el servicio. Revisa que el microservicio esté levantado.', 'error');
   }
 });
 
-function openAuth(mode, role) {
+function openAuth(mode = 'register', role = 'adopter') {
   currentMode = mode;
   form.reset();
+
   roleSelect.value = role;
   updateRoleFields(role);
   clearStatus();
 
   const isLogin = mode === 'login';
-  modeLabel.textContent = isLogin ? 'Inicio de sesion' : 'Registro';
-  title.textContent = isLogin ? 'Iniciar sesion' : 'Crear cuenta';
-  document.querySelector('.boton-submit').textContent = isLogin ? 'Entrar' : 'Continuar';
+  modeLabel.textContent = isLogin ? 'Inicio de sesión' : 'Registro';
+  title.textContent = isLogin ? 'Iniciar sesión' : 'Crear cuenta';
+  submitBtn.textContent = isLogin ? 'Entrar' : 'Continuar';
+
   document.querySelectorAll('.solo-registro').forEach((field) => {
     field.classList.toggle('oculto', isLogin);
   });
-  updateRequiredFields(role, isLogin);
 
+  updateRequiredFields(role, isLogin);
   modal.showModal();
 }
 
@@ -105,9 +109,7 @@ function updateRequiredFields(role, isLogin) {
 
 function setRequired(selector, required) {
   const field = document.querySelector(selector);
-  if (field) {
-    field.required = required;
-  }
+  if (field) field.required = required;
 }
 
 function buildPayload(data, mode) {
@@ -143,7 +145,7 @@ function buildPayload(data, mode) {
     name: data.name,
     email: data.email,
     phone: data.phone,
-    location: data.location || 'Sin ubicacion',
+    location: data.location || 'Sin ubicación',
     housing: data.housing || 'No especificado',
     hasKids: false,
     currentPets: [],
@@ -155,7 +157,6 @@ function resolveEndpoint(role, mode) {
   if (mode === 'login') {
     return `${API_BASES[role]}/${encodeURIComponent(document.querySelector('#userId').value)}`;
   }
-
   return API_BASES[role];
 }
 
@@ -167,10 +168,4 @@ function showStatus(message, type) {
 function clearStatus() {
   statusEl.textContent = '';
   statusEl.className = 'estado-formulario';
-}
-
-function animateButton(button) {
-  button.classList.remove('boton-animado');
-  void button.offsetWidth;
-  button.classList.add('boton-animado');
 }

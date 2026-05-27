@@ -1,182 +1,289 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>PetFinder | Adopciones inteligentes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Tipografías -->
-  <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Tipografías redondas y llamativas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- TU CSS PERSONALIZADO -->
-  <link rel="stylesheet" href="styles.css">
+  <!-- CSS global + CSS del index -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="index.css" />
 </head>
+
 <body>
   <header class="barra-superior">
     <div class="barra-contenido">
-      <a class="titulo-site marca" href="#inicio" aria-label="Ir al inicio">PetFinder</a>
+      <a class="marca" href="#inicio" aria-label="Ir al inicio">
+        <span class="marca-badge" aria-hidden="true"></span>
+        PetFinder
+      </a>
+
       <nav class="navegacion" aria-label="Navegación principal">
+        <a class="enlace-nav" href="#que-es">Qué es</a>
         <a class="enlace-nav" href="#como-funciona">Cómo funciona</a>
         <a class="enlace-nav" href="#beneficios">Beneficios</a>
         <a class="enlace-nav" href="#roles">Usuarios</a>
-        <button class="boton-nav boton-claro" type="button" onclick="abrirModal()">Crear cuenta</button>
+        <a class="enlace-nav" href="#galeria">Galería</a>
+        <button class="boton boton-primario" type="button" data-open-auth="register" data-role="adopter">Crear cuenta</button>
       </nav>
     </div>
   </header>
+
   <main id="inicio">
-    <section class="hero seccion">
-      <div class="decoraciones-bg">
-        <!-- Patita SVG -->
-        <svg class="paws" viewBox="0 0 90 90" fill="none">
-          <ellipse cx="22" cy="76" rx="18" ry="10" fill="#FFD7E1"/>
-          <ellipse cx="70" cy="74" rx="11" ry="7" fill="#A6D6B7"/>
-          <ellipse cx="14" cy="45" rx="7" ry="7" fill="#A6D6B7"/>
-          <ellipse cx="42" cy="40" rx="5" ry="5" fill="#FFE379"/>
-          <ellipse cx="65" cy="53" rx="6" ry="6" fill="#FFD7E1"/>
-        </svg>
-        <!-- Hojas SVG -->
-        <svg class="leaves" viewBox="0 0 80 92" fill="none">
-          <ellipse cx="30" cy="68" rx="24" ry="10" fill="#A6D6B7"/>
-          <ellipse cx="60" cy="36" rx="20" ry="9" fill="#FFE379" opacity="0.7"/>
-          <ellipse cx="20" cy="28" rx="13" ry="7" fill="#FFD7E1" opacity="0.6"/>
-        </svg>
-        <!-- Flores SVG -->
-        <svg class="flowers" viewBox="0 0 60 60">
-          <circle cx="30" cy="30" r="8" fill="#FFE379"/>
-          <circle cx="15" cy="15" r="6" fill="#FFD7E1"/>
-          <circle cx="45" cy="20" r="5.5" fill="#A6D6B7"/>
-        </svg>
-      </div>
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <p class="etiqueta">Adopción, refugios y salud veterinaria en un solo flujo</p>
-          <h1>PetFinder</h1>
-          <p class="hero-texto">
-            Encuentra tu mejor amigo peludo, conoce refugios responsables y<br>
-            lleva el seguimiento veterinario en una sola plataforma.
-          </p>
-          <div class="acciones-hero">
-            <button class="boton boton-primario" type="button" onclick="abrirModal()">Crear cuenta</button>
-            <button class="boton boton-claro" type="button" onclick="abrirModal('login')">Ingresar</button>
+    <!-- HERO -->
+    <section class="seccion hero">
+      <div class="contenedor">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="etiqueta">Adopción + refugios + veterinarios (todo en uno)</span>
+            <h1>Adopta con match, no con caos.</h1>
+            <p class="hero-lead">
+              PetFinder conecta <strong>adoptantes</strong>, <strong>shelters</strong> y <strong>veterinarios</strong> para que la adopción sea clara,
+              responsable y con seguimiento real: historial médico, prueba de convivencia y acompañamiento post‑adopción.
+            </p>
+
+            <div class="hero-acciones">
+              <button class="boton boton-primario" type="button" data-open-auth="register" data-role="adopter">Quiero adoptar</button>
+              <button class="boton boton-secundario" type="button" data-open-auth="register" data-role="shelter">Soy shelter</button>
+              <button class="boton boton-claro" type="button" data-open-auth="login">Ingresar</button>
+            </div>
+
+            <p style="font-size:.98rem; max-width: 70ch;">
+              “No es solo ver fotos: aquí decides con información (vacunas, eventos médicos, preferencias, compatibilidad).”
+            </p>
+          </div>
+
+          <!-- Collage con TUS fotos -->
+          <div class="hero-collage" aria-label="Mascotas destacadas">
+            <div class="collage-card collage-1">
+              <img src="https://media.istockphoto.com/id/618949520/es/foto/el-perro-m%C3%A1s-feliz-del-mundo.jpg?s=612x612&w=0&k=20&c=N8a8nu1LZW_uZWSVK6f2sfEO5_UrL5zIvPChA0rx5Dk=" alt="Perrito feliz">
+              <span class="collage-tag">Perros</span>
+            </div>
+            <div class="collage-card collage-2">
+              <img src="https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?fm=jpg&q=60&w=1200&auto=format&fit=crop" alt="Gatico tierno">
+              <span class="collage-tag">Gatos</span>
+            </div>
+            <div class="collage-card collage-3" aria-hidden="true">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPT9vq4GQrX5W31ZdKjaJu7JYuTB5LPJln4g&s" alt="">
+            </div>
           </div>
         </div>
-        <div class="escena-app">
-          <img src="https://wradio.com.mx/resizer/v2/TZ3NIGJ3QVLN3FHX2NR4FXYNQE.jpg?auth=a8c4408abe7686a6fc93609cbed7c4c1cae5b2a64fc7c78c1fa808ae81a7e3ef&width=768&height=576&quality=70&smart=true"
-            alt="Perrito" class="animal-hero">
-          <img src="https://santafemascotas.cl/wp-content/uploads/2023/01/lina-angelov-Ah_QC2v2alE-unsplash-scaled.jpg"
-            alt="Gatico" class="animal-hero cat">
+      </div>
+    </section>
+
+    <!-- QUÉ ES -->
+    <section class="seccion" id="que-es">
+      <div class="contenedor">
+        <div class="banda">
+          <div class="banda-inner">
+            <span class="etiqueta">¿Qué hace PetFinder?</span>
+            <h2>Convierte la adopción en un proceso claro, bonito y responsable</h2>
+            <p>
+              PetFinder nació para resolver el problema real: shelters con inventarios manuales y adoptantes sin una plataforma centralizada
+              para ver perfiles completos, historial médico, y tener un seguimiento serio después de adoptar.
+            </p>
+          </div>
         </div>
       </div>
     </section>
-    <section class="seccion banda-clara" id="que-hace">
-  <div class="que-hace-centro">
-    <p class="etiqueta">¿Qué hace?</p>
-    <h2>Convierte la adopción en<br>un proceso claro y bonito</h2>
-    <p>
-      PetFinder une perfiles de adoptantes, refugios y veterinarios en un solo flujo.<br>
-      La información real, no improvisada: historial médico, preferencias, mensajes y compatibilidad para decisiones responsables.
-    </p>
-  </div>
-</section>
+
+    <!-- CÓMO FUNCIONA (RF + user stories, resumido y atractivo) -->
     <section class="seccion" id="como-funciona">
       <div class="contenedor">
-        <div class="encabezado-seccion">
-          <p class="etiqueta">Cómo funciona</p>
-          <h2>Del registro al match</h2>
+        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
+          <span class="etiqueta">Cómo funciona</span>
+          <h2>Del registro al match (sin improvisar)</h2>
+          <p>Un flujo simple, pero con datos reales por detrás: preferencias, estados, historial veterinario y comunicación directa.</p>
         </div>
-        <div class="pasos">
-          <article class="paso">
-            <span class="paso-ilustracion">🐾</span>
-            <span style="font-size:1.31rem;font-weight:800;">1</span>
-            <h3>El refugio registra</h3>
-            <p>Crea su perfil, agrega mascotas y gestiona a los veterinarios asociados.</p>
+
+        <div class="grid-4">
+          <article class="card card-pad feature">
+            <h3>1) Shelter registra</h3>
+            <p>Crea su perfil, sube mascotas con información completa y arma su equipo veterinario.</p>
           </article>
-          <article class="paso">
-            <span class="paso-ilustracion" style="color:#FFD7E1">♡</span>
-            <span style="font-size:1.31rem;font-weight:800;">2</span>
-            <h3>La persona define<br>preferencias</h3>
-            <p>Selecciona tipo de vivienda, experiencia y el tipo de compañía buscada.</p>
+
+          <article class="card card-pad feature">
+            <h3>2) Adoptante define</h3>
+            <p>Preferencias de convivencia: vivienda, energía, tamaño, edad, compatibilidad con niños/mascotas.</p>
           </article>
-          <article class="paso">
-            <span class="paso-ilustracion" style="color:#A6D6B7;">+</span>
-            <span style="font-size:1.31rem;font-weight:800;">3</span>
-            <h3>Veterinario actualiza<br>salud</h3>
-            <p>Registra vacunas, tratamientos y citas de cada animalito.</p>
+
+          <article class="card card-pad feature">
+            <h3>3) Vet valida salud</h3>
+            <p>Vacunas, tratamientos, citas y eventos médicos en un carnet digital (no solo “me dijeron”).</p>
           </article>
-          <article class="paso">
-            <span class="paso-ilustracion" style="color:#FFE379;">🌸</span>
-            <span style="font-size:1.31rem;font-weight:800;">4</span>
-            <h3>El sistema calcula<br>compatibilidad</h3>
-            <p>Facilita candidatos y contactos para matches más responsables.</p>
+
+          <article class="card card-pad feature">
+            <h3>4) Motor de matching</h3>
+            <p>Calcula compatibilidad y ordena recomendaciones por afinidad. Primero lo más probable, no lo más random.</p>
           </article>
         </div>
       </div>
     </section>
-    <section class="seccion banda-verde" id="beneficios">
+
+    <!-- BENEFICIOS (RF/RNF traducidos a web) -->
+    <section class="seccion" id="beneficios">
       <div class="contenedor">
-        <div class="encabezado-seccion">
-          <p class="etiqueta" style="background:var(--green);color:#fff;">Beneficios</p>
-          <h2>Menos caos, más adopciones felices</h2>
+        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
+          <span class="etiqueta">Beneficios</span>
+          <h2>Menos caos. Más adopciones felices.</h2>
+          <p>Diseñado para que cada rol haga lo suyo y todo quede trazable.</p>
         </div>
-        <div class="beneficios-grid">
-          <article>
-            <h3>Datos completos</h3>
-            <p>Perfiles, historial médico, mensajes y estado de adopción conectados.</p>
+
+        <div class="grid-4">
+          <article class="card card-pad feature">
+            <h3>Perfiles completos</h3>
+            <p>Nombre, raza, edad, energía, fotos, bio y estado de adopción (AVAILABLE, IN_TRIAL, ADOPTED, RETURNED).</p>
           </article>
-          <article>
-            <h3>IDs propios</h3>
-            <p>Cada refugio, persona y veterinario usa su propio identificador.</p>
+
+          <article class="card card-pad feature">
+            <h3>Historial médico</h3>
+            <p>Carnet digital con vacunas, desparasitación, tratamientos, eventos médicos y próximas fechas.</p>
           </article>
-          <article>
-            <h3>Seguimiento veterinario</h3>
-            <p>Citas, vacunas y tratamientos ligados a cada animalito.</p>
+
+          <article class="card card-pad feature">
+            <h3>Prueba de convivencia</h3>
+            <p>Un periodo con inicio/fin, extensión o devolución responsable si no funcionó.</p>
           </article>
-          <article>
-            <h3>Mejores matches</h3>
-            <p>La compatibilidad se basa en información, no en suposiciones.</p>
+
+          <article class="card card-pad feature">
+            <h3>Seguridad por rol</h3>
+            <p>El adoptante ve lo necesario; el veterinario autorizado accede al historial completo.</p>
+          </article>
+        </div>
+
+        <div style="height: 1rem;"></div>
+
+        <div class="grid-3">
+          <article class="card card-pad feature">
+            <h3>Rendimiento</h3>
+            <p>Recomendaciones rápidas incluso con catálogos grandes (pensado para escalar).</p>
+          </article>
+          <article class="card card-pad feature">
+            <h3>Mantenibilidad</h3>
+            <p>Arquitectura pensada para crecer sin romper: módulos claros, responsabilidades separadas.</p>
+          </article>
+          <article class="card card-pad feature">
+            <h3>Comunicación</h3>
+            <p>Con match, se habilita contacto para coordinar pasos de adopción de forma ordenada.</p>
           </article>
         </div>
       </div>
     </section>
+
+    <!-- ROLES -->
     <section class="seccion" id="roles">
       <div class="contenedor">
-        <div class="encabezado-seccion">
-          <p class="etiqueta">¿Quiénes pueden usarlo?</p>
+        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
+          <span class="etiqueta">Usuarios</span>
           <h2>Cada tipo de usuario tiene su propia puerta</h2>
+          <p>Porque no es lo mismo adoptar, administrar un shelter o llevar el control veterinario.</p>
         </div>
-        <div class="roles-grid">
-          <article class="rol-card">
-            <span class="paso-ilustracion" style="font-size:2.2rem;">👩</span>
-            <h3>Adoptante</h3>
-            <p>Crea su perfil, preferencias, da likes y navega por los matches ideales.</p>
-            <button class="boton boton-primario" onclick="abrirModal('register','adopter')">Registrarme</button>
+
+        <div class="grid-3">
+          <article class="card card-pad role-card">
+            <div class="role-top">
+              <div class="role-icon">👤</div>
+              <span class="role-badge">Adoptante</span>
+            </div>
+            <h3>Encuentra tu match ideal</h3>
+            <p>Define preferencias, navega recomendaciones por compatibilidad y gestiona tu proceso de adopción.</p>
+            <button class="boton boton-primario" type="button" data-open-auth="register" data-role="adopter">Registrarme</button>
           </article>
-          <article class="rol-card destacado">
-            <span class="paso-ilustracion" style="font-size:2.2rem;">🏠</span>
-            <h3>Refugio</h3>
-            <p>Administra mascotas, asigna veterinarios y contacta adoptantes.</p>
-            <button class="boton boton-oscuro" onclick="abrirModal('register','shelter')">Registrarme</button>
+
+          <article class="card card-pad role-card destacado">
+            <div class="role-top">
+              <div class="role-icon">🏠</div>
+              <span class="role-badge">Shelter</span>
+            </div>
+            <h3>Administra mascotas sin perder info</h3>
+            <p>Registro completo, estados de adopción, asignación de veterinarios y trazabilidad de devoluciones.</p>
+            <button class="boton boton-secundario" type="button" data-open-auth="register" data-role="shelter">Registrar shelter</button>
           </article>
-          <article class="rol-card">
-            <span class="paso-ilustracion" style="font-size:2.3rem;">🩺</span>
-            <h3>Veterinario</h3>
-            <p>Gestiona eventos médicos y vacunas de los animalitos.</p>
-            <button class="boton boton-primario" onclick="abrirModal('register','veterinarian')">Registrarme</button>
+
+          <article class="card card-pad role-card">
+            <div class="role-top">
+              <div class="role-icon">🩺</div>
+              <span class="role-badge">Veterinario</span>
+            </div>
+            <h3>Salud al día, sin suposiciones</h3>
+            <p>Actualiza vacunas, tratamientos, citas y eventos médicos para el seguimiento post‑adopción.</p>
+            <button class="boton boton-primario" type="button" data-open-auth="register" data-role="veterinarian">Soy veterinario</button>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERÍA (tus enlaces) -->
+    <section class="seccion" id="galeria">
+      <div class="contenedor">
+        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
+          <span class="etiqueta">Galería</span>
+          <h2>Caritas que te van a robar el corazón</h2>
+          <p>Usamos tus fotos como base visual. Aquí quedan en formato galería para que se vea “full pro”.</p>
+        </div>
+
+        <div class="galeria" aria-label="Galería de perros y gatos">
+          <!-- Perritos -->
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1heZNGwuWT26mK4Mqds_RMu9om12oiXSs1A&s" target="_blank" rel="noreferrer">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1heZNGwuWT26mK4Mqds_RMu9om12oiXSs1A&s" alt="Perrito 1">
+          </a>
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm0s6qrESnu0-ukv4oCWBrYKp3g6Ia-EDOZw&s" target="_blank" rel="noreferrer">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm0s6qrESnu0-ukv4oCWBrYKp3g6Ia-EDOZw&s" alt="Perrito 2">
+          </a>
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCTGGb8Qzus1xfUYddpzelMRaPB4nGxyT6tA&s" target="_blank" rel="noreferrer">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCTGGb8Qzus1xfUYddpzelMRaPB4nGxyT6tA&s" alt="Perrito 3">
+          </a>
+          <a href="https://media.istockphoto.com/id/618949520/es/foto/el-perro-m%C3%A1s-feliz-del-mundo.jpg?s=612x612&w=0&k=20&c=N8a8nu1LZW_uZWSVK6f2sfEO5_UrL5zIvPChA0rx5Dk=" target="_blank" rel="noreferrer">
+            <img src="https://media.istockphoto.com/id/618949520/es/foto/el-perro-m%C3%A1s-feliz-del-mundo.jpg?s=612x612&w=0&k=20&c=N8a8nu1LZW_uZWSVK6f2sfEO5_UrL5zIvPChA0rx5Dk=" alt="Perrito 4">
+          </a>
+          <a href="https://i.pinimg.com/236x/1e/9d/2e/1e9d2e96e67f6f72054722b515505e62.jpg" target="_blank" rel="noreferrer">
+            <img src="https://i.pinimg.com/236x/1e/9d/2e/1e9d2e96e67f6f72054722b515505e62.jpg" alt="Perrito 5">
+          </a>
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPT9vq4GQrX5W31ZdKjaJu7JYuTB5LPJln4g&s" target="_blank" rel="noreferrer">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPT9vq4GQrX5W31ZdKjaJu7JYuTB5LPJln4g&s" alt="Perrito 6">
+          </a>
+
+          <!-- Gaticos -->
+          <a href="https://i.pinimg.com/236x/2e/2d/b3/2e2db3394efa67302e2da1deb676839b.jpg" target="_blank" rel="noreferrer">
+            <img src="https://i.pinimg.com/236x/2e/2d/b3/2e2db3394efa67302e2da1deb676839b.jpg" alt="Gatico 1">
+          </a>
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuORO3NAK_oVG2PMa6J80K5JLKHI9PkfvZDA&s" target="_blank" rel="noreferrer">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuORO3NAK_oVG2PMa6J80K5JLKHI9PkfvZDA&s" alt="Gatico 2">
+          </a>
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBgkMvKoDFORTkauM4RnF987Vk1UpwBUN5xw&s" target="_blank" rel="noreferrer">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBgkMvKoDFORTkauM4RnF987Vk1UpwBUN5xw&s" alt="Gatico 3">
+          </a>
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGp2Rom7LC_XKHTCN7UngudkSgqs-6mlCDGw&s" target="_blank" rel="noreferrer">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGp2Rom7LC_XKHTCN7UngudkSgqs-6mlCDGw&s" alt="Gatico 4">
+          </a>
+          <a href="https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?fm=jpg&q=60&w=1200&auto=format&fit=crop" target="_blank" rel="noreferrer">
+            <img src="https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?fm=jpg&q=60&w=1200&auto=format&fit=crop" alt="Gatico 5">
+          </a>
+          <a href="https://www.marie-claire.es/wp-content/uploads/sites/2/2023/01/10/63bd76e7ac7cc.jpeg" target="_blank" rel="noreferrer">
+            <img src="https://www.marie-claire.es/wp-content/uploads/sites/2/2023/01/10/63bd76e7ac7cc.jpeg" alt="Gatico 6">
+          </a>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="pie">
-    <span class="titulo-site">PetFinder</span>
-    <p>Adopciones responsables. Refugios, personas y veterinarios trabajando en equipo.</p>
+    <div class="contenedor">
+      <span class="titulo-site">PetFinder</span>
+      <p>Adopciones responsables. Refugios, personas y veterinarios trabajando en equipo.</p>
+    </div>
   </footer>
 
-  <!-- Modal Auth ↓↓↓ -->
+  <!-- Modal Auth -->
   <dialog class="modal-auth" id="authModal" aria-labelledby="authTitle">
     <form class="auth-panel" id="authForm" method="dialog">
-      <button class="cerrar-modal" type="button" onclick="cerrarModal()" aria-label="Cerrar">×</button>
+      <button class="cerrar-modal" type="button" data-close-auth aria-label="Cerrar">×</button>
+
       <p class="etiqueta" id="authModeLabel">Registro</p>
       <h2 id="authTitle">Crear cuenta</h2>
 
@@ -208,61 +315,32 @@
         Teléfono
         <input id="phone" name="phone" type="tel" autocomplete="tel">
       </label>
+
       <label class="solo-shelter solo-registro">
         Ubicación del shelter
         <input id="location" name="location" type="text">
       </label>
+
       <label class="solo-veterinarian solo-registro">
         Especialidad
         <input id="specialty" name="specialty" type="text" placeholder="Medicina general, cirugía...">
       </label>
+
       <label class="solo-veterinarian solo-registro">
         ID del shelter asignado
         <input id="shelterId" name="shelterId" type="text">
       </label>
+
       <label class="solo-adopter solo-registro">
         Tipo de vivienda
         <input id="housing" name="housing" type="text" placeholder="Casa, apartamento...">
       </label>
+
       <button class="boton boton-primario boton-submit" type="submit">Continuar</button>
       <p class="estado-formulario" id="formStatus" role="status"></p>
     </form>
   </dialog>
-  <script>
-  // Simple control de modal (puedes mejorar o usar tu código anterior)
-  const modal = document.getElementById('authModal');
-  function abrirModal(mode = 'register', role = 'adopter') {
-    // Formulario adaptativo
-    document.getElementById('roleSelect').value = role;
-    document.getElementById('authModeLabel').textContent = (mode === 'login') ? 'Inicio de sesión' : 'Registro';
-    document.getElementById('authTitle').textContent   = (mode === 'login') ? 'Iniciar sesión' : 'Crear cuenta';
-    document.querySelector('.boton-submit').textContent = (mode === 'login') ? 'Entrar' : 'Continuar';
-    document.querySelectorAll('.solo-registro').forEach(el => {
-      el.classList.toggle('oculto', mode === 'login');
-    });
-    // Visibilidad de campos según rol
-    document.querySelectorAll('.solo-adopter, .solo-shelter, .solo-veterinarian').forEach(field => {
-      field.classList.add('oculto');
-    });
-    if (mode !== 'login') {
-      document.querySelectorAll(`.solo-${role}`).forEach(field => field.classList.remove('oculto'));
-    }
-    modal.showModal();
-  }
-  function cerrarModal() { modal.close(); }
-  // Cierra modal con Esc
-  modal.addEventListener('cancel', e => { e.preventDefault(); cerrarModal();});
-  // Resetea
-  document.getElementById('authForm').addEventListener('submit', function(event){
-    event.preventDefault();
-    cerrarModal();
-  });
-  document.getElementById('roleSelect').addEventListener('change', function(ev){
-    const role = ev.target.value;
-    document.querySelectorAll('.solo-adopter, .solo-shelter, .solo-veterinarian').forEach(f=>f.classList.add('oculto'));
-    if(document.getElementById('authModeLabel').textContent === 'Registro')
-      document.querySelectorAll(`.solo-${role}`).forEach(f=>f.classList.remove('oculto'));
-  });
-  </script>
+
+  <script src="index.js"></script>
 </body>
 </html>
