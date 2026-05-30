@@ -14,6 +14,7 @@ import com.royal.msmatch.patterns.iterator.PetCandidateIterator;
 import com.royal.msmatch.patterns.observer.AdopterMatchSubscriber;
 import com.royal.msmatch.patterns.observer.MatchPublisher;
 import com.royal.msmatch.patterns.observer.ShelterMatchSubscriber;
+import com.royal.msmatch.patterns.state.MatchStateContext;
 import com.royal.msmatch.patterns.singleton.MatchingEngineClient;
 import com.royal.msmatch.patterns.singleton.MatchingEngine;
 import com.royal.msmatch.patterns.strategy.StrictCompatibilityStrategy;
@@ -81,12 +82,15 @@ public class MatchService {
         match.setMatchScore(round(request.score()));
         match.setShelterId(request.shelterId());
 
-        if (request.score() >= properties.minimumScore() && request.shelterApproves()) {
-            match.setStatus(MatchStatus.MUTUAL);
-            matchPublisher.publish(match);
-        } else {
-            match.setStatus(MatchStatus.PENDING);
-            match.setMessage("Waiting for mutual approval or minimum score.");
+        MatchStateContext stateContext = new MatchStateContext(match);
+        boolean mutualApproval = request.score() >= properties.minimumScore() && request.shelterApproves();
+        if (stateContext.getStatus() == MatchStatus.PENDING) {
+            stateContext.handleSwipeResult(mutualApproval);
+            if (mutualApproval) {
+                matchPublisher.publish(match);
+            } else {
+                match.setMessage("Waiting for mutual approval or minimum score.");
+            }
         }
 
         return toResponse(repository.save(match));
@@ -110,7 +114,8 @@ public class MatchService {
     public MatchResponseDTO updateStatus(String matchId, MatchStatus status) {
         Match match = repository.findById(matchId)
                 .orElseThrow(() -> new IllegalArgumentException("Match not found: " + matchId));
-        match.setStatus(status);
+        MatchStateContext stateContext = new MatchStateContext(match);
+        stateContext.transitionTo(status);
         return toResponse(repository.save(match));
     }
 
