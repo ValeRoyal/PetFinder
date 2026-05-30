@@ -3,10 +3,13 @@ package com.royal.msnotification.patterns.observer;
 import com.royal.msnotification.model.Notification;
 import com.royal.msnotification.model.NotificationEvent;
 import com.royal.msnotification.model.enums.NotificationStatus;
+import com.royal.msnotification.patterns.chain.NotificationHandler;
 
 import java.time.LocalDateTime;
 
-public abstract class AbstractNotificationSubscriber implements NotificationSubscriber {
+public abstract class AbstractNotificationSubscriber implements NotificationSubscriber, NotificationHandler {
+
+    private NotificationHandler next;
 
     protected Notification createNotification(NotificationEvent event, String fallbackSubject, String fallbackContent) {
         Notification notification = new Notification();
@@ -22,6 +25,23 @@ public abstract class AbstractNotificationSubscriber implements NotificationSubs
         notification.setSourceEventId(event.sourceEventId());
         notification.setCreatedAt(LocalDateTime.now());
         return notification;
+    }
+
+    @Override
+    public NotificationHandler setNext(NotificationHandler handler) {
+        this.next = handler;
+        return handler;
+    }
+
+    @Override
+    public Notification handle(NotificationEvent event) {
+        if (supports(event)) {
+            return update(event);
+        }
+        if (next != null) {
+            return next.handle(event);
+        }
+        throw new IllegalArgumentException("No notification handler found for type: " + event.type());
     }
 
     private String resolve(String value, String fallback) {

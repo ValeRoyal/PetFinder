@@ -25,11 +25,23 @@ Plataforma que conecta refugios de animales con personas que quieren adoptar. Pe
 
 ## 🏗️ Patrones de Diseño
 
-El sistema aplica **7 patrones** como requisito del proyecto:
+El sistema aplica **14 patrones** como requisito del proyecto:
 
 **Creacionales:** Singleton (`MatchingEngine`) · Abstract Factory (`CatFactory`, `DogFactory`) · Builder (`PetProfileBuilder`)
 
 **Estructurales:** Facade (`PetAdoptionFacade`) · Decorator (`EnhancedProfileView`) · Proxy (`MedicalRecordProxy`) · Adapter (`MessagingAdapter`)
+
+**Comportamiento:** Command · Iterator · Observer · Strategy · State · Chain of Responsibility · Template Method
+
+| Patrón | Dónde se usa | Implementación | Descripción |
+|---|---|---|---|
+| Command | msAdopter | `SwipeCommand`, `SwipeRightCommand`, `SwipeLeftCommand`, `SwipeInvoker` | Encapsula acciones de swipe y permite deshacer. |
+| Iterator | msMatch / msNotification | `AvailablePetCandidateIterator`, `PendingNotificationIterator` | Recorre colecciones sin exponer su estructura interna. |
+| Observer | msMatch / msNotification | `MatchPublisher`, `NotificationPublisher` y subscribers | Publica eventos a suscriptores interesados. |
+| Strategy | msMatch / msNotification | `WeightedCompatibilityStrategy`/`StrictCompatibilityStrategy`, `EmailNotificationStrategy`/`InAppNotificationStrategy` | Permite intercambiar algoritmos de compatibilidad o entrega. |
+| State | msMatch | `MatchStateContext` y estados concretos | Controla transiciones del ciclo de vida del match. |
+| Chain of Responsibility | msNotification | `NotificationHandler` + handlers concretos | Encadena manejadores para resolver eventos por tipo. |
+| Template Method | msNotification | `NotificationDeliveryTemplate` | Define los pasos de entrega y delega variaciones en subclases. |
 
 ---
 
