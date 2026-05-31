@@ -11,11 +11,12 @@ import com.royal.msnotification.model.enums.NotificationStatus;
 import com.royal.msnotification.patterns.iterator.NotificationIterator;
 import com.royal.msnotification.patterns.iterator.PendingNotificationCollection;
 import com.royal.msnotification.patterns.observer.AdoptionNotificationSubscriber;
+import com.royal.msnotification.patterns.observer.GeneralNotificationSubscriber;
 import com.royal.msnotification.patterns.observer.LoginNotificationSubscriber;
 import com.royal.msnotification.patterns.observer.MatchNotificationSubscriber;
 import com.royal.msnotification.patterns.observer.MedicalEventNotificationSubscriber;
-import com.royal.msnotification.patterns.observer.NotificationPublisher;
 import com.royal.msnotification.patterns.observer.VetNotificationSubscriber;
+import com.royal.msnotification.patterns.chain.NotificationHandler;
 import com.royal.msnotification.patterns.strategy.EmailNotificationStrategy;
 import com.royal.msnotification.patterns.strategy.InAppNotificationStrategy;
 import com.royal.msnotification.patterns.strategy.NotificationDeliveryClient;
@@ -31,8 +32,8 @@ public class NotificationService {
 
     private final NotificationRepository repository;
     private final NotificationCommunicationGateway communicationGateway;
-    private final NotificationPublisher publisher;
     private final NotificationDeliveryClient deliveryClient;
+    private final NotificationHandler handlerChain;
 
     public NotificationService(
             NotificationRepository repository,
@@ -42,9 +43,8 @@ public class NotificationService {
     ) {
         this.repository = repository;
         this.communicationGateway = communicationGateway;
-        this.publisher = new NotificationPublisher();
         this.deliveryClient = new NotificationDeliveryClient(emailNotificationStrategy, inAppNotificationStrategy);
-        subscribeDefaultHandlers();
+        this.handlerChain = buildHandlerChain();
     }
 
     @Transactional
@@ -85,10 +85,8 @@ public class NotificationService {
                 request.content()
         );
 
-        return publisher.publish(event).stream()
-                .map(repository::save)
-                .map(this::toResponse)
-                .toList();
+        Notification notification = handlerChain.handle(event);
+        return List.of(toResponse(repository.save(notification)));
     }
 
     @Transactional
@@ -146,12 +144,16 @@ public class NotificationService {
                 + communicationGateway.vetClient();
     }
 
-    private void subscribeDefaultHandlers() {
-        publisher.subscribe(new MatchNotificationSubscriber());
-        publisher.subscribe(new LoginNotificationSubscriber());
-        publisher.subscribe(new VetNotificationSubscriber());
-        publisher.subscribe(new MedicalEventNotificationSubscriber());
-        publisher.subscribe(new AdoptionNotificationSubscriber());
+    private NotificationHandler buildHandlerChain() {
+        NotificationHandler matchHandler = new MatchNotificationSubscriber();
+        matchHandler
+                .setNext(new LoginNotificationSubscriber())
+                .setNext(new VetNotificationSubscriber())
+                .setNext(new MedicalEventNotificationSubscriber())
+                .setNext(new AdoptionNotificationSubscriber())
+                .setNext(new GeneralNotificationSubscriber());
+
+        return matchHandler;
     }
 
     private NotificationChannel resolveChannel(NotificationChannel channel) {
