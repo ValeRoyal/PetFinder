@@ -1,6 +1,6 @@
 # 🐾 PetFinder
 
-Aplicación web estilo Tinder para conectar refugios de animales con adoptantes potenciales, con motor de matching inteligente y seguimiento post-adopción.
+Aplicación web estilo Tinder para conectar refugios de animales con adoptantes potenciales, con motor de matching y seguimiento post-adopción.
 
 ---
 
