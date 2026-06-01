@@ -6,6 +6,7 @@ public record AdopterProfileRequestDTO(
         String id,
         String name,
         String email,
+        String password,
         String phone,
         String location,
         String housing,

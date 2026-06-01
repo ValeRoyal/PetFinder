@@ -35,6 +35,9 @@ public class Shelter {
     @Column(name = "email", nullable = false, unique = true, length = 120)
     String email;
 
+    @Column(name = "password", nullable = false, length = 120)
+    String password;
+
     @Column(name = "phone", nullable = false, length = 30)
     String phone;
 

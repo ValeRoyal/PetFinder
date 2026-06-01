@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,6 +33,11 @@ public class ShelterRestController {
     @PostMapping
     public ResponseEntity<ShelterResponseDTO> create(@RequestBody ShelterRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ShelterResponseDTO> login(@RequestParam String identifier, @RequestParam String password) {
+        return ResponseEntity.ok(service.login(identifier, password));
     }
 
     @GetMapping

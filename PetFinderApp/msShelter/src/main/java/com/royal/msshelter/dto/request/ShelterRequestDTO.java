@@ -7,6 +7,7 @@ public record ShelterRequestDTO(
         String name,
         String location,
         String email,
+        String password,
         String phone,
         List<String> photos,
         List<String> videos

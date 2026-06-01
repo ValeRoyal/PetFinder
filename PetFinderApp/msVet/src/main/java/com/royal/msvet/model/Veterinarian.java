@@ -28,8 +28,11 @@ public class Veterinarian {
     @Column(name = "phoneNumber",  nullable = false, unique = false, length = 50)
     String phoneNumber;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     String email;                           // para notificaciones
+
+    @Column(name = "password", nullable = false, length = 120)
+    String password;
 
     // Referencia al refugio
     @Column(name = "shelter_id", nullable = false, length = 50)

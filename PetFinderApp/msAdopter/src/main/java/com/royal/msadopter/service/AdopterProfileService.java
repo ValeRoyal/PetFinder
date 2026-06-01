@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AdopterProfileService {
@@ -35,16 +36,10 @@ public class AdopterProfileService {
 
     @Transactional
     public AdopterProfileResponseDTO create(AdopterProfileRequestDTO request) {
-        if (adopterRepository.existsByEmailIgnoreCase(request.email())) {
-            throw new IllegalArgumentException("Adopter email already exists: " + request.email());
-        }
+        validateEmailAvailability(request.email(), null);
 
         AdopterProfile adopter = new AdopterProfile();
-        String id = requireId(request.id(), "Adopter id is required");
-        if (adopterRepository.existsById(id)) {
-            throw new IllegalArgumentException("Adopter id already exists: " + id);
-        }
-        adopter.setId(id);
+        adopter.setId(generateNextId());
         applyProfileData(adopter, request);
 
         return toResponse(adopterRepository.save(adopter));
@@ -69,9 +64,24 @@ public class AdopterProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("Adopter not found by email: " + email));
     }
 
+    @Transactional(readOnly = true)
+    public AdopterProfileResponseDTO login(String identifier, String password) {
+        AdopterProfile adopter = identifier.contains("@")
+                ? adopterRepository.findByEmailIgnoreCase(identifier)
+                    .orElseThrow(() -> new IllegalArgumentException("Adopter not found by email: " + identifier))
+                : findEntityById(identifier);
+
+        if (password == null || password.isBlank() || !matchesPassword(adopter.getPassword(), password)) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+
+        return toResponse(adopter);
+    }
+
     @Transactional
     public AdopterProfileResponseDTO update(String id, AdopterProfileRequestDTO request) {
         AdopterProfile adopter = findEntityById(id);
+        validateEmailAvailability(request.email(), adopter.getId());
         applyProfileData(adopter, request);
         return toResponse(adopterRepository.save(adopter));
     }
@@ -141,6 +151,11 @@ public class AdopterProfileService {
     private void applyProfileData(AdopterProfile adopter, AdopterProfileRequestDTO request) {
         adopter.setName(request.name());
         adopter.setEmail(request.email());
+        if (adopter.getId() == null) {
+            adopter.setPassword(requirePassword(request.password()));
+        } else if (request.password() != null && !request.password().isBlank()) {
+            adopter.setPassword(request.password());
+        }
         adopter.setPhone(request.phone());
         adopter.setLocation(request.location());
         adopter.setHousing(request.housing());
@@ -179,6 +194,43 @@ public class AdopterProfileService {
             throw new IllegalArgumentException(message);
         }
         return id;
+    }
+
+    private String requirePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        return password;
+    }
+
+    private void validateEmailAvailability(String email, String currentAdopterId) {
+        adopterRepository.findByEmailIgnoreCase(email)
+                .filter(existing -> currentAdopterId == null || !existing.getId().equals(currentAdopterId))
+                .ifPresent(existing -> {
+                    throw new IllegalArgumentException("Adopter email already exists: " + email);
+                });
+    }
+
+    private boolean matchesPassword(String storedPassword, String providedPassword) {
+        return storedPassword != null && storedPassword.equals(providedPassword);
+    }
+
+    private String generateNextId() {
+        int max = adopterRepository.findAll().stream()
+                .map(AdopterProfile::getId)
+                .filter(id -> id != null && id.toUpperCase(Locale.ROOT).startsWith("ADOPTER-"))
+                .map(id -> id.substring("ADOPTER-".length()))
+                .map(value -> {
+                    try {
+                        return Integer.parseInt(value);
+                    } catch (NumberFormatException ex) {
+                        return 0;
+                    }
+                })
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        return String.format("ADOPTER-%03d", max + 1);
     }
 
     private AdopterProfileResponseDTO toResponse(AdopterProfile adopter) {

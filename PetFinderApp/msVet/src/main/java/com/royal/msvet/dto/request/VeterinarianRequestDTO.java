@@ -9,5 +9,6 @@ public class VeterinarianRequestDTO {
     String specialty;
     String phoneNumber;
     String email;
+    String password;
     String shelterId;
 }

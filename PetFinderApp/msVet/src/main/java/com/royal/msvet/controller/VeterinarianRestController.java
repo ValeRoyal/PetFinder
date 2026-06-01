@@ -25,6 +25,13 @@ public class VeterinarianRestController {
                 .body(veterinarianService.register(dto));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<VeterinarianResponseDTO> login(
+            @RequestParam String identifier,
+            @RequestParam String password) {
+        return ResponseEntity.ok(veterinarianService.login(identifier, password));
+    }
+
     // RF-05.1 — todos los vets de un refugio
     @GetMapping("/shelter/{shelterId}")
     public ResponseEntity<List<VeterinarianResponseDTO>> getByShelter(

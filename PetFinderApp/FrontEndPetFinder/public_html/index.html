@@ -1,346 +1,660 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>PetFinder | Adopciones inteligentes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Tipografías redondas y llamativas -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- CSS global + CSS del index -->
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="index.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetFinder - Adopciones Inteligentes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
 </head>
-
 <body>
-  <header class="barra-superior">
-    <div class="barra-contenido">
-      <a class="marca" href="#inicio" aria-label="Ir al inicio">
-        <span class="marca-badge" aria-hidden="true"></span>
-        PetFinder
-      </a>
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page">
+        <header class="landing-header">
+            <div class="container">
+                <div class="logo">🐾 PetFinder</div>
+                <nav class="landing-nav">
+                    <a href="#about">Sobre nosotros</a>
+                    <a href="#how-it-works">Cómo funciona</a>
+                    <button class="btn btn-primary" onclick="showModal('authModal')">Iniciar sesión</button>
+                    <button class="btn btn-secondary" onclick="showModal('registerModal')">Registrarse</button>
+                </nav>
+            </div>
+        </header>
 
-      <nav class="navegacion" aria-label="Navegación principal">
-        <a class="enlace-nav" href="#que-es">Qué es</a>
-        <a class="enlace-nav" href="#como-funciona">Cómo funciona</a>
-        <a class="enlace-nav" href="#beneficios">Beneficios</a>
-        <a class="enlace-nav" href="#roles">Usuarios</a>
-        <a class="enlace-nav" href="#galeria">Galería</a>
-        <button class="boton boton-primario" type="button" data-open-auth="register" data-role="adopter">Crear cuenta</button>
-      </nav>
+        <section class="landing-hero">
+            <div class="container">
+                <h1>Encuentra tu mascota perfecta</h1>
+                <p>Conectamos adoptantes, refugios y veterinarios para hacer que la adopción sea segura, responsable y llena de amor.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-large btn-primary" onclick="openAuthRegister('adopter')">Quiero adoptar</button>
+                    <button class="btn btn-large btn-secondary" onclick="openAuthRegister('shelter')">Soy refugio</button>
+                    <button class="btn btn-large btn-outline" onclick="openAuthRegister('veterinarian')">Soy veterinario</button>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?w=600&auto=format&fit=crop" alt="Mascotas felices">
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="landing-section">
+            <div class="container">
+                <h2>¿Cómo funciona?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">👤</div>
+                        <h3>Crea tu perfil</h3>
+                        <p>Regístrate como adoptante, refugio o veterinario en segundos.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3>Define preferencias</h3>
+                        <p>Los adoptantes especifican qué tipo de mascota buscan.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💚</div>
+                        <h3>Encuentra matches</h3>
+                        <p>Sistema inteligente de compatibilidad entre adoptantes y mascotas.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📝</div>
+                        <h3>Historial médico</h3>
+                        <p>Carnet digital completo de vacunas y tratamientos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="landing-section bg-light">
+            <div class="container">
+                <h2>Sobre PetFinder</h2>
+                <p>PetFinder es una plataforma integral que conecta a personas que desean adoptar mascotas, refugios que las cuidan y veterinarios que las atienden. Creemos en adopciones responsables, basadas en datos reales y con seguimiento completo post-adopción.</p>
+            </div>
+        </section>
     </div>
-  </header>
 
-  <main id="inicio">
-    <!-- HERO -->
-    <section class="seccion hero">
-      <div class="contenedor">
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <span class="etiqueta">Adopción + refugios + veterinarios (todo en uno)</span>
-            <h1>Adopta con match, no con caos.</h1>
-            <p class="hero-lead">
-              PetFinder conecta <strong>adoptantes</strong>, <strong>shelters</strong> y <strong>veterinarios</strong> para que la adopción sea clara,
-              responsable y con seguimiento real: historial médico, prueba de convivencia y acompañamiento post‑adopción.
-            </p>
+    <!-- Auth Modal -->
+    <dialog id="authModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+            <h2>Iniciar sesión</h2>
 
-            <div class="hero-acciones">
-              <button class="boton boton-primario" type="button" data-open-auth="register" data-role="adopter">Quiero adoptar</button>
-              <button class="boton boton-secundario" type="button" data-open-auth="register" data-role="shelter">Soy shelter</button>
-              <button class="boton boton-claro" type="button" data-open-auth="login">Ingresar</button>
+            <div class="role-selector">
+                <label>Soy:</label>
+                <select id="authRole" onchange="updateAuthForm()">
+                    <option value="adopter">Adoptante</option>
+                    <option value="shelter">Refugio</option>
+                    <option value="veterinarian">Veterinario</option>
+                </select>
             </div>
 
-            <p style="font-size:.98rem; max-width: 70ch;">
-              “No es solo ver fotos: aquí decides con información (vacunas, eventos médicos, preferencias, compatibilidad).”
-            </p>
-          </div>
+            <form id="authForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>ID o Email:</label>
+                    <input type="text" id="authId" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="authPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary full-width">Entrar</button>
+            </form>
+            <p class="modal-text">Puedes iniciar sesión con tu ID automático o con tu email, junto con tu contraseña.</p>
 
-          <!-- Collage con TUS fotos -->
-          <div class="hero-collage" aria-label="Mascotas destacadas">
-            <div class="collage-card collage-1">
-              <img src="https://media.istockphoto.com/id/618949520/es/foto/el-perro-m%C3%A1s-feliz-del-mundo.jpg?s=612x612&w=0&k=20&c=N8a8nu1LZW_uZWSVK6f2sfEO5_UrL5zIvPChA0rx5Dk=" alt="Perrito feliz">
-              <span class="collage-tag">Perros</span>
+            <p class="modal-text">¿No tienes cuenta? <a href="#" onclick="switchModals('authModal', 'registerModal')">Registrate aquí</a></p>
+        </div>
+    </dialog>
+
+    <!-- Register Modal -->
+    <dialog id="registerModal" class="modal">
+        <div class="modal-content modal-large">
+            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            <h2>Crear cuenta</h2>
+
+            <div class="role-selector">
+                <label>Soy:</label>
+                <select id="registerRole" onchange="updateRegisterForm()">
+                    <option value="adopter">Adoptante</option>
+                    <option value="shelter">Refugio</option>
+                    <option value="veterinarian">Veterinario</option>
+                </select>
             </div>
-            <div class="collage-card collage-2">
-              <img src="https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?fm=jpg&q=60&w=1200&auto=format&fit=crop" alt="Gatico tierno">
-              <span class="collage-tag">Gatos</span>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" id="regName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña:</label>
+                        <input type="password" id="regPassword" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="regEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono:</label>
+                        <input type="tel" id="regPhone">
+                    </div>
+                </div>
+
+                <!-- Adoptante specific -->
+                <div id="adopterFields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ubicación:</label>
+                            <input type="text" id="regLocationAdopter" placeholder="Ciudad, distrito">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de vivienda:</label>
+                            <select id="regHousing">
+                                <option>Casa</option>
+                                <option>Apartamento</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>¿Tienes hijos?</label>
+                            <select id="regKids">
+                                <option value="false">No</option>
+                                <option value="true">Sí</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mascotas actuales (separadas por coma):</label>
+                            <input type="text" id="regCurrentPets" placeholder="Perro, Gato...">
+                        </div>
+                        <div class="form-group">
+                            <label>Nivel de energía ideal:</label>
+                            <select id="regEnergyMatch">
+                                <option value="BAJO">Bajo</option>
+                                <option value="MEDIO" selected>Medio</option>
+                                <option value="ALTO">Alto</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Edad mínima (años):</label>
+                            <input type="number" id="regMinAge" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Edad máxima (años):</label>
+                            <input type="number" id="regMaxAge" min="0" value="15">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>¿Convivencia con otras mascotas?</label>
+                            <select id="regOtherPetsFriendly">
+                                <option value="true">Sí</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tamaños preferidos:</label>
+                            <input type="text" id="regPreferredSizes" placeholder="Pequeño, Mediano">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shelter specific -->
+                <div id="shelterFields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ubicación:</label>
+                            <input type="text" id="regLocationShelter">
+                        </div>
+                        <div class="form-group">
+                            <label>Foto de portada (URL opcional):</label>
+                            <input type="url" id="regShelterPhoto" placeholder="https://...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Video institucional (URL opcional):</label>
+                        <input type="url" id="regShelterVideo" placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- Vet specific -->
+                <div id="vetFields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Especialidad:</label>
+                            <input type="text" id="regSpecialty">
+                        </div>
+                        <div class="form-group">
+                            <label>ID del refugio asignado:</label>
+                            <input type="text" id="regShelterId">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email profesional:</label>
+                        <input type="email" id="regVetEmail" placeholder="vet@petfinder.com">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">Registrarse</button>
+            </form>
+            <p class="modal-text">El ID de tu cuenta se generará automáticamente al registrarte.</p>
+
+            <p class="modal-text">¿Ya tienes cuenta? <a href="#" onclick="switchModals('registerModal', 'authModal')">Inicia sesión aquí</a></p>
+        </div>
+    </dialog>
+
+    <!-- Dashboard (oculto inicialmente) -->
+    <div id="dashboard" class="dashboard" style="display:none;">
+        <!-- Navbar -->
+        <nav class="dashboard-navbar">
+            <div class="navbar-left">
+                <div class="logo">🐾 PetFinder</div>
+                <div class="user-info">
+                    <span id="userBadge"></span>
+                </div>
             </div>
-            <div class="collage-card collage-3" aria-hidden="true">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPT9vq4GQrX5W31ZdKjaJu7JYuTB5LPJln4g&s" alt="">
+            <div class="navbar-right">
+                <button id="notificationBell" class="icon-btn" onclick="toggleNotifications()">
+                    🔔 <span id="notificationCount" class="notification-badge">0</span>
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="logout()">Cerrar sesión</button>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </nav>
 
-    <!-- QUÉ ES -->
-    <section class="seccion" id="que-es">
-      <div class="contenedor">
-        <div class="banda">
-          <div class="banda-inner">
-            <span class="etiqueta">¿Qué hace PetFinder?</span>
-            <h2>Convierte la adopción en un proceso claro, bonito y responsable</h2>
-            <p>
-              PetFinder nació para resolver el problema real: shelters con inventarios manuales y adoptantes sin una plataforma centralizada
-              para ver perfiles completos, historial médico, y tener un seguimiento serio después de adoptar.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+        <!-- Notification Panel -->
+        <div id="notificationPanel" class="notification-panel" style="display:none;"></div>
 
-    <!-- CÓMO FUNCIONA (RF + user stories, resumido y atractivo) -->
-    <section class="seccion" id="como-funciona">
-      <div class="contenedor">
-        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
-          <span class="etiqueta">Cómo funciona</span>
-          <h2>Del registro al match (sin improvisar)</h2>
-          <p>Un flujo simple, pero con datos reales por detrás: preferencias, estados, historial veterinario y comunicación directa.</p>
-        </div>
+        <!-- Content Area -->
+        <div class="dashboard-content">
+            <!-- Adopter Panel -->
+            <div id="adopterPanel" class="panel" style="display:none;">
+                <div class="panel-container">
+                    <h1>Encuentra tu mascota perfecta</h1>
 
-        <div class="grid-4">
-          <article class="card card-pad feature">
-            <h3>1) Shelter registra</h3>
-            <p>Crea su perfil, sube mascotas con información completa y arma su equipo veterinario.</p>
-          </article>
+                    <!-- My Profile Section -->
+                    <section class="section" id="adopterProfileSection">
+                        <div class="section-header-flex">
+                            <h2>Mi perfil</h2>
+                            <button type="button" class="btn btn-small btn-outline" onclick="toggleProfileEdit()">✏️ Editar perfil</button>
+                        </div>
+                        <div id="profileDisplayArea" class="profile-info-grid">
+                            <p>Cargando perfil...</p>
+                        </div>
+                        <form id="adopterProfileForm" style="display:none;" onsubmit="saveAdopterProfile(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nombre:</label>
+                                    <input type="text" id="editProfileName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email:</label>
+                                    <input type="email" id="editProfileEmail" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Teléfono:</label>
+                                    <input type="tel" id="editProfilePhone">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ubicación:</label>
+                                    <input type="text" id="editProfileLocation">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tipo de vivienda:</label>
+                                    <select id="editProfileHousing">
+                                        <option>Casa</option>
+                                        <option>Apartamento</option>
+                                        <option>Otro</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>¿Tienes hijos?</label>
+                                    <select id="editProfileHasKids">
+                                        <option value="false">No</option>
+                                        <option value="true">Sí</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Mascotas actuales (separadas por coma):</label>
+                                <input type="text" id="editProfileCurrentPets" placeholder="Perro, Gato...">
+                            </div>
+                            <div class="form-row" style="margin-top:12px; gap:8px;">
+                                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                <button type="button" class="btn btn-secondary" onclick="toggleProfileEdit()">Cancelar</button>
+                            </div>
+                        </form>
+                    </section>
 
-          <article class="card card-pad feature">
-            <h3>2) Adoptante define</h3>
-            <p>Preferencias de convivencia: vivienda, energía, tamaño, edad, compatibilidad con niños/mascotas.</p>
-          </article>
+                    <!-- Preferences Section -->
+                    <section class="section" id="adopterPreferencesSection">
+                        <h2>Mis preferencias</h2>
+                        <form onsubmit="savePreferences(event)" class="preferences-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Especies:</label>
+                                    <input type="text" id="prefSpecies" placeholder="Perro, Gato...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tamaño preferido:</label>
+                                    <select id="prefSize">
+                                        <option>Pequeño</option>
+                                        <option>Mediano</option>
+                                        <option>Grande</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar preferencias</button>
+                        </form>
+                    </section>
 
-          <article class="card card-pad feature">
-            <h3>3) Vet valida salud</h3>
-            <p>Vacunas, tratamientos, citas y eventos médicos en un carnet digital (no solo “me dijeron”).</p>
-          </article>
+                    <!-- Swipe Section -->
+                    <section class="section" id="adopterSwipeSection">
+                        <h2>Encuentra tu mascota</h2>
+                        <div class="swipe-container">
+                            <div id="petCard" class="pet-card">
+                                <img id="petImage" src="https://via.placeholder.com/300" alt="Mascota">
+                                <div class="pet-info">
+                                    <h3 id="petName">Luna</h3>
+                                    <p id="petDetails">Perro, 3 años, Mediano</p>
+                                    <p id="petBio">Mascota alegre y sociable</p>
+                                </div>
+                            </div>
+                            <div id="swipeButtons" class="swipe-buttons">
+                                <button class="btn btn-large btn-danger" onclick="executeSwipe('left')">👎 Pasar</button>
+                                <button class="btn btn-large btn-success" onclick="executeSwipe('right')">❤️ Me interesa</button>
+                            </div>
+                        </div>
+                    </section>
 
-          <article class="card card-pad feature">
-            <h3>4) Motor de matching</h3>
-            <p>Calcula compatibilidad y ordena recomendaciones por afinidad. Primero lo más probable, no lo más random.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- BENEFICIOS (RF/RNF traducidos a web) -->
-    <section class="seccion" id="beneficios">
-      <div class="contenedor">
-        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
-          <span class="etiqueta">Beneficios</span>
-          <h2>Menos caos. Más adopciones felices.</h2>
-          <p>Diseñado para que cada rol haga lo suyo y todo quede trazable.</p>
-        </div>
-
-        <div class="grid-4">
-          <article class="card card-pad feature">
-            <h3>Perfiles completos</h3>
-            <p>Nombre, raza, edad, energía, fotos, bio y estado de adopción (AVAILABLE, IN_TRIAL, ADOPTED, RETURNED).</p>
-          </article>
-
-          <article class="card card-pad feature">
-            <h3>Historial médico</h3>
-            <p>Carnet digital con vacunas, desparasitación, tratamientos, eventos médicos y próximas fechas.</p>
-          </article>
-
-          <article class="card card-pad feature">
-            <h3>Prueba de convivencia</h3>
-            <p>Un periodo con inicio/fin, extensión o devolución responsable si no funcionó.</p>
-          </article>
-
-          <article class="card card-pad feature">
-            <h3>Seguridad por rol</h3>
-            <p>El adoptante ve lo necesario; el veterinario autorizado accede al historial completo.</p>
-          </article>
-        </div>
-
-        <div style="height: 1rem;"></div>
-
-        <div class="grid-3">
-          <article class="card card-pad feature">
-            <h3>Rendimiento</h3>
-            <p>Recomendaciones rápidas incluso con catálogos grandes (pensado para escalar).</p>
-          </article>
-          <article class="card card-pad feature">
-            <h3>Mantenibilidad</h3>
-            <p>Arquitectura pensada para crecer sin romper: módulos claros, responsabilidades separadas.</p>
-          </article>
-          <article class="card card-pad feature">
-            <h3>Comunicación</h3>
-            <p>Con match, se habilita contacto para coordinar pasos de adopción de forma ordenada.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ROLES -->
-    <section class="seccion" id="roles">
-      <div class="contenedor">
-        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
-          <span class="etiqueta">Usuarios</span>
-          <h2>Cada tipo de usuario tiene su propia puerta</h2>
-          <p>Porque no es lo mismo adoptar, administrar un shelter o llevar el control veterinario.</p>
-        </div>
-
-        <div class="grid-3">
-          <article class="card card-pad role-card">
-            <div class="role-top">
-              <div class="role-icon">👤</div>
-              <span class="role-badge">Adoptante</span>
+                    <!-- Matches Section -->
+                    <section class="section" id="adopterMatchesSection">
+                        <h2>Mis matches</h2>
+                        <div id="matchesList" class="matches-grid"></div>
+                    </section>
+                </div>
             </div>
-            <h3>Encuentra tu match ideal</h3>
-            <p>Define preferencias, navega recomendaciones por compatibilidad y gestiona tu proceso de adopción.</p>
-            <button class="boton boton-primario" type="button" data-open-auth="register" data-role="adopter">Registrarme</button>
-          </article>
 
-          <article class="card card-pad role-card destacado">
-            <div class="role-top">
-              <div class="role-icon">🏠</div>
-              <span class="role-badge">Shelter</span>
+            <!-- Shelter Panel -->
+            <div id="shelterPanel" class="panel" style="display:none;">
+                <div class="panel-container">
+                    <h1>Panel del Refugio</h1>
+
+                    <!-- Add Pet Section -->
+                    <section class="section">
+                        <h2>Registrar mascota</h2>
+                        <form id="petForm" onsubmit="addPet(event)" class="pet-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ID:</label>
+                                    <input type="text" id="petId" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nombre:</label>
+                                    <input type="text" id="petName2" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Especie:</label>
+                                    <select id="petSpecies" required>
+                                        <option value="DOG">Perro</option>
+                                        <option value="CAT">Gato</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Raza:</label>
+                                    <input type="text" id="petBreed">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Edad:</label>
+                                    <input type="number" id="petAge">
+                                </div>
+                                <div class="form-group">
+                                    <label>Sexo:</label>
+                                    <select id="petSex">
+                                        <option value="MACHO">Macho</option>
+                                        <option value="HEMBRA">Hembra</option>
+                                        <option value="NO_ESPECIFICADO">No especificado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tamaño:</label>
+                                    <select id="petSize">
+                                        <option>Pequeño</option>
+                                        <option>Mediano</option>
+                                        <option>Grande</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nivel de energía:</label>
+                                    <select id="petEnergyLevel">
+                                        <option value="BAJO">Bajo</option>
+                                        <option value="MEDIO" selected>Medio</option>
+                                        <option value="ALTO">Alto</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>¿Compatible con niños?</label>
+                                    <select id="petKidsCompatible">
+                                        <option value="true">Sí</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>¿Compatible con otras mascotas?</label>
+                                    <select id="petOtherPetsCompatible">
+                                        <option value="true">Sí</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descripción:</label>
+                                <textarea id="petBio2" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Subir imagen:</label>
+                                <input type="file" id="petImage2" accept="image/*" onchange="previewImage(event)">
+                                <div id="imagePreview"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Registrar mascota</button>
+                        </form>
+                    </section>
+
+                    <!-- Pets List -->
+                    <section class="section">
+                        <h2>Mascotas registradas</h2>
+                        <div id="shelterPetsList" class="pets-grid"></div>
+                    </section>
+
+                    <!-- Shelter: consulta de carnet al final -->
+                    <section id="shelterCardSection" class="section">
+                        <h2>Consultar carnet por mascota</h2>
+                        <form onsubmit="loadShelterVaccinationCard(event)" class="health-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ID de mascota:</label>
+                                    <select id="shelterCardLookupPetId" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="submit" class="btn btn-secondary full-width">Consultar carnet</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="shelterVaccinationCardsList"></div>
+                    </section>
+                </div>
             </div>
-            <h3>Administra mascotas sin perder info</h3>
-            <p>Registro completo, estados de adopción, asignación de veterinarios y trazabilidad de devoluciones.</p>
-            <button class="boton boton-secundario" type="button" data-open-auth="register" data-role="shelter">Registrar shelter</button>
-          </article>
 
-          <article class="card card-pad role-card">
-            <div class="role-top">
-              <div class="role-icon">🩺</div>
-              <span class="role-badge">Veterinario</span>
+            <!-- Veterinarian Panel -->
+            <div id="vetPanel" class="panel" style="display:none;">
+                <div class="panel-container">
+                    <h1>Panel del Veterinario</h1>
+
+                    <!-- Crear carnet -->
+                    <section class="section">
+                        <h2>Crear carnet de vacunación</h2>
+                        <form onsubmit="createVaccinationCard(event)" class="health-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ID de la mascota:</label>
+                                    <select id="vaccPetId" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary full-width">Crear carnet</button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Registrar vacuna -->
+                    <section class="section">
+                        <h2>Registrar vacuna</h2>
+                        <form onsubmit="addVaccine(event)" class="health-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ID vacuna:</label>
+                                    <input type="text" id="vaccineId" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nombre vacuna:</label>
+                                    <input type="text" id="vaccineName" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Fecha de aplicación:</label>
+                                    <input type="date" id="vaccineAppliedDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Próxima dosis:</label>
+                                    <input type="date" id="vaccineNextDueDate">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Mascota (ID - Nombre):</label>
+                                    <select id="vaccinePetId" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>ID carnet (petProfileId):</label>
+                                    <input type="text" id="vaccineCardId" required readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>ID veterinario que aplica:</label>
+                                    <input type="text" id="vaccineAdminVetId" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Guardar vacuna</button>
+                        </form>
+                    </section>
+
+                    <!-- Evento medico -->
+                    <section class="section">
+                        <h2>Registrar evento médico</h2>
+                        <form onsubmit="addHealthRecord(event)" class="health-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ID de la mascota:</label>
+                                    <select id="healthPetId" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de evento:</label>
+                                    <select id="healthType" required>
+                                        <option value="ACCIDENT">Accidente</option>
+                                        <option value="SURGERY">Cirugía</option>
+                                        <option value="ILLNESS">Enfermedad</option>
+                                        <option value="ARRIVAL">Ingreso</option>
+                                        <option value="OTHER">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Fecha:</label>
+                                    <input type="date" id="healthDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Título:</label>
+                                    <input type="text" id="healthTitle" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Descripción:</label>
+                                    <input type="text" id="healthDescription" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Notas vet:</label>
+                                    <input type="text" id="healthVetNotes">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ID carnet (petProfileId):</label>
+                                <input type="text" id="healthCardId" required readonly>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Guardar registro</button>
+                        </form>
+                    </section>
+
+                    <!-- Vaccination Cards -->
+                    <section class="section">
+                        <h2>Consultar carnet por mascota</h2>
+                        <form onsubmit="loadVaccinationCard(event)" class="health-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ID de mascota:</label>
+                                    <select id="cardLookupPetId" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="submit" class="btn btn-secondary full-width">Consultar carnet</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="vaccinationCardsList"></div>
+                    </section>
+                </div>
             </div>
-            <h3>Salud al día, sin suposiciones</h3>
-            <p>Actualiza vacunas, tratamientos, citas y eventos médicos para el seguimiento post‑adopción.</p>
-            <button class="boton boton-primario" type="button" data-open-auth="register" data-role="veterinarian">Soy veterinario</button>
-          </article>
+
         </div>
-      </div>
-    </section>
-
-    <!-- GALERÍA (tus enlaces) -->
-    <section class="seccion" id="galeria">
-      <div class="contenedor">
-        <div style="text-align:center; display:grid; gap:.7rem; margin-bottom: 1.35rem;">
-          <span class="etiqueta">Galería</span>
-          <h2>Caritas que te van a robar el corazón</h2>
-          <p>Usamos tus fotos como base visual. Aquí quedan en formato galería para que se vea “full pro”.</p>
-        </div>
-
-        <div class="galeria" aria-label="Galería de perros y gatos">
-          <!-- Perritos -->
-          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1heZNGwuWT26mK4Mqds_RMu9om12oiXSs1A&s" target="_blank" rel="noreferrer">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1heZNGwuWT26mK4Mqds_RMu9om12oiXSs1A&s" alt="Perrito 1">
-          </a>
-          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm0s6qrESnu0-ukv4oCWBrYKp3g6Ia-EDOZw&s" target="_blank" rel="noreferrer">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm0s6qrESnu0-ukv4oCWBrYKp3g6Ia-EDOZw&s" alt="Perrito 2">
-          </a>
-          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCTGGb8Qzus1xfUYddpzelMRaPB4nGxyT6tA&s" target="_blank" rel="noreferrer">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCTGGb8Qzus1xfUYddpzelMRaPB4nGxyT6tA&s" alt="Perrito 3">
-          </a>
-          <a href="https://media.istockphoto.com/id/618949520/es/foto/el-perro-m%C3%A1s-feliz-del-mundo.jpg?s=612x612&w=0&k=20&c=N8a8nu1LZW_uZWSVK6f2sfEO5_UrL5zIvPChA0rx5Dk=" target="_blank" rel="noreferrer">
-            <img src="https://media.istockphoto.com/id/618949520/es/foto/el-perro-m%C3%A1s-feliz-del-mundo.jpg?s=612x612&w=0&k=20&c=N8a8nu1LZW_uZWSVK6f2sfEO5_UrL5zIvPChA0rx5Dk=" alt="Perrito 4">
-          </a>
-          <a href="https://i.pinimg.com/236x/1e/9d/2e/1e9d2e96e67f6f72054722b515505e62.jpg" target="_blank" rel="noreferrer">
-            <img src="https://i.pinimg.com/236x/1e/9d/2e/1e9d2e96e67f6f72054722b515505e62.jpg" alt="Perrito 5">
-          </a>
-          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPT9vq4GQrX5W31ZdKjaJu7JYuTB5LPJln4g&s" target="_blank" rel="noreferrer">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPT9vq4GQrX5W31ZdKjaJu7JYuTB5LPJln4g&s" alt="Perrito 6">
-          </a>
-
-          <!-- Gaticos -->
-          <a href="https://i.pinimg.com/236x/2e/2d/b3/2e2db3394efa67302e2da1deb676839b.jpg" target="_blank" rel="noreferrer">
-            <img src="https://i.pinimg.com/236x/2e/2d/b3/2e2db3394efa67302e2da1deb676839b.jpg" alt="Gatico 1">
-          </a>
-          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuORO3NAK_oVG2PMa6J80K5JLKHI9PkfvZDA&s" target="_blank" rel="noreferrer">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuORO3NAK_oVG2PMa6J80K5JLKHI9PkfvZDA&s" alt="Gatico 2">
-          </a>
-          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBgkMvKoDFORTkauM4RnF987Vk1UpwBUN5xw&s" target="_blank" rel="noreferrer">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBgkMvKoDFORTkauM4RnF987Vk1UpwBUN5xw&s" alt="Gatico 3">
-          </a>
-          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGp2Rom7LC_XKHTCN7UngudkSgqs-6mlCDGw&s" target="_blank" rel="noreferrer">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGp2Rom7LC_XKHTCN7UngudkSgqs-6mlCDGw&s" alt="Gatico 4">
-          </a>
-          <a href="https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?fm=jpg&q=60&w=1200&auto=format&fit=crop" target="_blank" rel="noreferrer">
-            <img src="https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?fm=jpg&q=60&w=1200&auto=format&fit=crop" alt="Gatico 5">
-          </a>
-          <a href="https://www.marie-claire.es/wp-content/uploads/sites/2/2023/01/10/63bd76e7ac7cc.jpeg" target="_blank" rel="noreferrer">
-            <img src="https://www.marie-claire.es/wp-content/uploads/sites/2/2023/01/10/63bd76e7ac7cc.jpeg" alt="Gatico 6">
-          </a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="pie">
-    <div class="contenedor">
-      <span class="titulo-site">PetFinder</span>
-      <p>Adopciones responsables. Refugios, personas y veterinarios trabajando en equipo.</p>
     </div>
-  </footer>
 
-  <!-- Modal Auth -->
-  <dialog class="modal-auth" id="authModal" aria-labelledby="authTitle">
-    <form class="auth-panel" id="authForm" method="dialog">
-      <button class="cerrar-modal" type="button" data-close-auth aria-label="Cerrar">×</button>
-
-      <p class="etiqueta" id="authModeLabel">Registro</p>
-      <h2 id="authTitle">Crear cuenta</h2>
-
-      <label>
-        Tipo de cuenta
-        <select id="roleSelect" name="role" required>
-          <option value="adopter">Persona adoptante</option>
-          <option value="shelter">Shelter</option>
-          <option value="veterinarian">Veterinario</option>
-        </select>
-      </label>
-
-      <label>
-        ID propio
-        <input id="userId" name="id" type="text" autocomplete="off" placeholder="Ej: ADOP-1001" required>
-      </label>
-
-      <label>
-        Nombre
-        <input id="name" name="name" type="text" autocomplete="name" required>
-      </label>
-
-      <label>
-        Correo
-        <input id="email" name="email" type="email" autocomplete="email" required>
-      </label>
-
-      <label class="solo-registro">
-        Teléfono
-        <input id="phone" name="phone" type="tel" autocomplete="tel">
-      </label>
-
-      <label class="solo-shelter solo-registro">
-        Ubicación del shelter
-        <input id="location" name="location" type="text">
-      </label>
-
-      <label class="solo-veterinarian solo-registro">
-        Especialidad
-        <input id="specialty" name="specialty" type="text" placeholder="Medicina general, cirugía...">
-      </label>
-
-      <label class="solo-veterinarian solo-registro">
-        ID del shelter asignado
-        <input id="shelterId" name="shelterId" type="text">
-      </label>
-
-      <label class="solo-adopter solo-registro">
-        Tipo de vivienda
-        <input id="housing" name="housing" type="text" placeholder="Casa, apartamento...">
-      </label>
-
-      <button class="boton boton-primario boton-submit" type="submit">Continuar</button>
-      <p class="estado-formulario" id="formStatus" role="status"></p>
-    </form>
-  </dialog>
-
-  <script src="index.js"></script>
+    <script type="module" src="app.js?v=20260601-2"></script>
 </body>
 </html>
+

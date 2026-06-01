@@ -8,5 +8,6 @@ import java.util.List;
 @Repository
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, String> {
     List<Veterinarian> findByShelterId(String shelterId);
-    java.util.Optional<Veterinarian> findByEmail(String email);
+    java.util.Optional<Veterinarian> findByEmailIgnoreCase(String email);
+    boolean existsByEmailIgnoreCase(String email);
 }
