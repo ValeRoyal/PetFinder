@@ -35,6 +35,11 @@ public class AdopterProfileRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<AdopterProfileResponseDTO> login(@RequestParam String identifier, @RequestParam String password) {
+        return ResponseEntity.ok(service.login(identifier, password));
+    }
+
     @GetMapping
     public ResponseEntity<List<AdopterProfileResponseDTO>> findAll() {
         return ResponseEntity.ok(service.findAll());

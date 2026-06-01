@@ -45,6 +45,28 @@ public class VaccineService {
         return VaccineResponseDTO.from(vaccine);
     }
 
+    public VaccineResponseDTO updateVaccine(String id, VaccineRequestDTO dto) {
+        Vaccine vaccine = vaccineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vacuna no encontrada"));
+        VaccinationCard card = vaccinationCardRepository.findById(dto.getVaccinationCardId())
+                .orElseThrow(() -> new RuntimeException("Carnet no encontrado"));
+        Veterinarian vet = veterinarianRepository.findById(dto.getAdministeredById())
+                .orElseThrow(() -> new RuntimeException("Veterinario no encontrado"));
+
+        vaccine.setName(dto.getName());
+        vaccine.setAppliedDate(dto.getAppliedDate());
+        vaccine.setNextDueDate(dto.getNextDueDate());
+        vaccine.setAdministeredBy(vet);
+        vaccine.setVaccinationCard(card);
+        return VaccineResponseDTO.from(vaccineRepository.save(vaccine));
+    }
+
+    public void deleteVaccine(String id) {
+        Vaccine vaccine = vaccineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vacuna no encontrada"));
+        vaccineRepository.delete(vaccine);
+    }
+
     // RF-01.2 — próximas fechas de vacunación
     // alerta vacunas que vencen en los próximos 30 días
     public List<VaccineResponseDTO> getUpcoming(String petProfileId) {

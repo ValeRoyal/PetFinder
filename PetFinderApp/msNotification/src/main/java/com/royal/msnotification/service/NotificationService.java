@@ -133,6 +133,13 @@ public class NotificationService {
         return toResponse(repository.save(notification));
     }
 
+    @Transactional
+    public void deleteById(String id) {
+        Notification notification = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found: " + id));
+        repository.delete(notification);
+    }
+
     public String communicationSummary() {
         return "NotificationCommunicationGateway ready: "
                 + communicationGateway.matchClient()

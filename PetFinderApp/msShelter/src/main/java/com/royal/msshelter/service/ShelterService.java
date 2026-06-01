@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ShelterService {
@@ -31,18 +32,26 @@ public class ShelterService {
 
     @Transactional
     public ShelterResponseDTO create(ShelterRequestDTO request) {
-        if (shelterRepository.existsByEmailIgnoreCase(request.email())) {
-            throw new IllegalArgumentException("Shelter email already exists: " + request.email());
-        }
+        validateEmailAvailability(request.email(), null);
 
         Shelter shelter = new Shelter();
-        String id = requireId(request.id(), "Shelter id is required");
-        if (shelterRepository.existsById(id)) {
-            throw new IllegalArgumentException("Shelter id already exists: " + id);
-        }
-        shelter.setId(id);
+        shelter.setId(generateNextId());
         applyData(shelter, request);
         return toResponse(shelterRepository.save(shelter));
+    }
+
+    @Transactional(readOnly = true)
+    public ShelterResponseDTO login(String identifier, String password) {
+        Shelter shelter = identifier.contains("@")
+                ? shelterRepository.findByEmailIgnoreCase(identifier)
+                    .orElseThrow(() -> new IllegalArgumentException("Shelter not found by email: " + identifier))
+                : findEntityById(identifier);
+
+        if (password == null || password.isBlank() || !matchesPassword(shelter.getPassword(), password)) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+
+        return toResponse(shelter);
     }
 
     @Transactional(readOnly = true)
@@ -60,6 +69,7 @@ public class ShelterService {
     @Transactional
     public ShelterResponseDTO update(String id, ShelterRequestDTO request) {
         Shelter shelter = findEntityById(id);
+        validateEmailAvailability(request.email(), shelter.getId());
         applyData(shelter, request);
         return toResponse(shelterRepository.save(shelter));
     }
@@ -68,6 +78,13 @@ public class ShelterService {
     public ShelterResponseDTO registerPet(String shelterId, String petProfileId) {
         Shelter shelter = findEntityById(shelterId);
         facade.registerPet(shelter, petProfileId);
+        return toResponse(shelterRepository.save(shelter));
+    }
+
+    @Transactional
+    public ShelterResponseDTO removePet(String shelterId, String petProfileId) {
+        Shelter shelter = findEntityById(shelterId);
+        shelter.removePet(petProfileId);
         return toResponse(shelterRepository.save(shelter));
     }
 
@@ -123,6 +140,11 @@ public class ShelterService {
         shelter.setName(request.name());
         shelter.setLocation(request.location());
         shelter.setEmail(request.email());
+        if (shelter.getId() == null) {
+            shelter.setPassword(requirePassword(request.password()));
+        } else if (request.password() != null && !request.password().isBlank()) {
+            shelter.setPassword(request.password());
+        }
         shelter.setPhone(request.phone());
 
         shelter.getPhotos().clear();
@@ -141,6 +163,43 @@ public class ShelterService {
             throw new IllegalArgumentException(message);
         }
         return id;
+    }
+
+    private String requirePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        return password;
+    }
+
+    private void validateEmailAvailability(String email, String currentShelterId) {
+        shelterRepository.findByEmailIgnoreCase(email)
+                .filter(existing -> currentShelterId == null || !existing.getId().equals(currentShelterId))
+                .ifPresent(existing -> {
+                    throw new IllegalArgumentException("Shelter email already exists: " + email);
+                });
+    }
+
+    private boolean matchesPassword(String storedPassword, String providedPassword) {
+        return storedPassword != null && storedPassword.equals(providedPassword);
+    }
+
+    private String generateNextId() {
+        int max = shelterRepository.findAll().stream()
+                .map(Shelter::getId)
+                .filter(id -> id != null && id.toUpperCase(Locale.ROOT).startsWith("SHELTER-"))
+                .map(id -> id.substring("SHELTER-".length()))
+                .map(value -> {
+                    try {
+                        return Integer.parseInt(value);
+                    } catch (NumberFormatException ex) {
+                        return 0;
+                    }
+                })
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        return String.format("SHELTER-%03d", max + 1);
     }
 
     private ShelterResponseDTO toResponse(Shelter shelter) {

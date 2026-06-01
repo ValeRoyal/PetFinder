@@ -25,6 +25,19 @@ public class VaccineRestController {
                 .body(vaccineService.addVaccine(dto));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<VaccineResponseDTO> updateVaccine(
+            @PathVariable String id,
+            @RequestBody VaccineRequestDTO dto) {
+        return ResponseEntity.ok(vaccineService.updateVaccine(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVaccine(@PathVariable String id) {
+        vaccineService.deleteVaccine(id);
+        return ResponseEntity.noContent().build();
+    }
+
     // Todas las vacunas de una mascota
     @GetMapping("/pet/{petProfileId}")
     public ResponseEntity<List<VaccineResponseDTO>> getByPet(

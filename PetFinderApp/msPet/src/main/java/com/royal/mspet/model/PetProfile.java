@@ -61,7 +61,7 @@ public class PetProfile {
             name = "pet_profile_photos",
             joinColumns = @JoinColumn(name = "pet_profile_id")
     )
-    @Column(name = "photo_url", nullable = false, length = 255)
+    @Column(name = "photo_url", nullable = false, columnDefinition = "TEXT")
     List<String> photos = new ArrayList<>();
 
     @Column(name = "bio", length = 1500)

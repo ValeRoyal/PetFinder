@@ -54,6 +54,25 @@ public class PetProfileService {
         return toResponse(findEntityById(id), true);
     }
 
+    @Transactional
+    public PetProfileResponseDTO update(String id, PetProfileRequestDTO request) {
+        PetProfile profile = findEntityById(id);
+        profile.setName(request.name());
+        profile.setSpecies(request.species());
+        profile.setBreed(request.breed());
+        profile.setAge(request.age());
+        profile.setSex(request.sex());
+        profile.setSize(request.size());
+        applyOptionalProfileData(profile, request);
+        return toResponse(repository.save(profile), true);
+    }
+
+    @Transactional
+    public void delete(String id) {
+        PetProfile profile = findEntityById(id);
+        repository.delete(profile);
+    }
+
     @Transactional(readOnly = true)
     public List<PetProfileResponseDTO> findAvailable(String species) {
         List<PetProfile> profiles = species == null || species.isBlank()

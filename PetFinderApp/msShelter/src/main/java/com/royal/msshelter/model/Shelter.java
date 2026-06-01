@@ -35,6 +35,9 @@ public class Shelter {
     @Column(name = "email", nullable = false, unique = true, length = 120)
     String email;
 
+    @Column(name = "password", nullable = false, length = 120)
+    String password;
+
     @Column(name = "phone", nullable = false, length = 30)
     String phone;
 
@@ -71,7 +74,13 @@ public class Shelter {
     List<String> veterinarianIds = new ArrayList<>();
 
     public void registerPet(String petProfileId) {
-        petProfileIds.add(petProfileId);
+        if (!petProfileIds.contains(petProfileId)) {
+            petProfileIds.add(petProfileId);
+        }
+    }
+
+    public void removePet(String petProfileId) {
+        petProfileIds.remove(petProfileId);
     }
 
     public void registerVeterinarian(String veterinarianId) {

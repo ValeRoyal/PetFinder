@@ -47,6 +47,8 @@ out/
 
 # Logs
 *.log
+PetFinderApp/.petfinder-logs/
+PetFinderApp/.petfinder-processes.json
 
 # =========================
 # MAVEN
