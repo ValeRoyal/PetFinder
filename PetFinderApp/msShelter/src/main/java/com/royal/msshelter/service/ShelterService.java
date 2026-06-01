@@ -82,6 +82,13 @@ public class ShelterService {
     }
 
     @Transactional
+    public ShelterResponseDTO removePet(String shelterId, String petProfileId) {
+        Shelter shelter = findEntityById(shelterId);
+        shelter.removePet(petProfileId);
+        return toResponse(shelterRepository.save(shelter));
+    }
+
+    @Transactional
     public ShelterResponseDTO assignVeterinarian(String shelterId, String veterinarianId) {
         Shelter shelter = findEntityById(shelterId);
         facade.assignVeterinarian(shelter, veterinarianId);

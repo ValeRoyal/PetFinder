@@ -24,6 +24,8 @@ const state = {
     collapsedMatchIds: new Set(),
     deletedNotificationIds: new Set(),
     notificationPollTimer: null,
+    editingPetId: null,
+    editingPetPhotos: [],
 };
 
 function byId(id) {
@@ -116,7 +118,7 @@ async function handleLogin(event) {
         showDashboard(role);
         closeModal("authModal");
     } catch (error) {
-        alert("No se pudo iniciar sesion: " + error.message);
+        alert("Credenciales no validas");
     }
 }
 
@@ -237,8 +239,20 @@ function showDashboard(role) {
         loadPetCatalog();
     }
 
+    if (role === "veterinarian") {
+        populateVeterinarianDefaults();
+    }
+
     loadNotifications();
     startNotificationPolling();
+}
+
+function populateVeterinarianDefaults() {
+    const vetId = state.session?.id || "";
+    const vaccineVetInput = byId("vaccineAdminVetId");
+    if (vaccineVetInput && vetId) {
+        vaccineVetInput.value = vetId;
+    }
 }
 
 function logout() {
@@ -276,7 +290,7 @@ async function loadPetCatalog() {
 }
 
 function populatePetSelectors() {
-    const targetIds = ["vaccPetId", "vaccinePetId", "healthPetId", "cardLookupPetId", "shelterCardLookupPetId"];
+    const targetIds = ["vaccPetId", "vaccinePetId", "healthPetId", "cardLookupPetId", "shelterCardLookupPetId", "adopterCardLookupPetId"];
     const options = state.petCatalog.length
         ? state.petCatalog.map((pet) => `<option value="${pet.id}">${pet.id} - ${pet.name || "Sin nombre"}</option>`).join("")
         : "<option value=''>No hay mascotas registradas</option>";
@@ -316,6 +330,24 @@ function syncVaccinationCardIdsFromPet() {
     if (healthCardInput) {
         healthCardInput.value = healthPetId;
     }
+}
+
+function formatDisplayDate(value) {
+    if (!value) return "-";
+    const [year, month, day] = String(value).split("-");
+    if (!year || !month || !day) return value;
+    return `${day}/${month}/${year}`;
+}
+
+function normalizeMedicalEventType(type) {
+    const labels = {
+        ACCIDENT: "Accidente",
+        SURGERY: "Cirugia",
+        ILLNESS: "Enfermedad",
+        ARRIVAL: "Ingreso",
+        OTHER: "Otro",
+    };
+    return labels[type] || type || "-";
 }
 
 function startNotificationPolling() {
@@ -664,7 +696,14 @@ async function renderMatches(matches) {
         })
     );
 
-    container.innerHTML = enriched
+    const activeMatches = enriched.filter((m) => Boolean(m.pet));
+
+    if (!activeMatches.length) {
+        container.innerHTML = "<p class='empty-state'>Aun no tienes matches con mascotas disponibles. Sigue deslizando mascotas.</p>";
+        return;
+    }
+
+    container.innerHTML = activeMatches
         .map((m) => {
             const shelter = m.shelter;
             const petName = m.pet?.name || m.petProfileId || "Mascota";
@@ -776,7 +815,7 @@ async function addPet(event) {
     }
 
     const petData = {
-        id: byId("petId").value.trim(),
+        id: state.editingPetId || byId("petId").value.trim(),
         name: byId("petName2").value.trim(),
         species: byId("petSpecies").value,
         breed: byId("petBreed").value.trim(),
@@ -786,21 +825,24 @@ async function addPet(event) {
         energyLevel: byId("petEnergyLevel").value,
         kidsCompatible: byId("petKidsCompatible").value === "true",
         otherPetsCompatible: byId("petOtherPetsCompatible").value === "true",
-        photos: uploadedPhotoUrl ? [uploadedPhotoUrl] : [],
+        photos: uploadedPhotoUrl ? [uploadedPhotoUrl] : state.editingPetPhotos,
         bio: byId("petBio2").value.trim(),
     };
 
-    await savePet(petData);
+    await savePet(petData, Boolean(state.editingPetId));
 }
 
-async function savePet(petData) {
+async function savePet(petData, isEditing = false) {
     try {
-        const created = await apiFetch(API_BASES.pet, {
-            method: "POST",
+        const endpoint = isEditing
+            ? `${API_BASES.pet}/${encodeURIComponent(petData.id)}`
+            : API_BASES.pet;
+        const created = await apiFetch(endpoint, {
+            method: isEditing ? "PUT" : "POST",
             body: JSON.stringify(petData),
         });
 
-        if (state.session?.role === "shelter" && state.session?.id) {
+        if (!isEditing && state.session?.role === "shelter" && state.session?.id) {
             try {
                 await apiFetch(`${API_BASES.shelter}/${encodeURIComponent(state.session.id)}/pets`, {
                     method: "POST",
@@ -811,19 +853,32 @@ async function savePet(petData) {
             }
         }
 
-        alert("Mascota registrada exitosamente");
-        byId("petForm").reset();
-        setHtml("imagePreview", "");
-        const imageInput = byId("petImage2");
-        if (imageInput) {
-            delete imageInput.dataset.uploadedUrl;
-            imageInput.value = "";
-        }
+        alert(isEditing ? "Mascota actualizada exitosamente" : "Mascota registrada exitosamente");
+        resetPetForm();
         await loadShelterPets();
         await loadPetCatalog();
     } catch (error) {
-        alert("Error al registrar mascota: " + error.message);
+        alert((isEditing ? "Error al actualizar mascota: " : "Error al registrar mascota: ") + error.message);
     }
+}
+
+function resetPetForm() {
+    byId("petForm").reset();
+    byId("petId").readOnly = false;
+    byId("petSubmitButton").textContent = "Registrar mascota";
+    byId("petCancelEditButton").style.display = "none";
+    state.editingPetId = null;
+    state.editingPetPhotos = [];
+    setHtml("imagePreview", "");
+    const imageInput = byId("petImage2");
+    if (imageInput) {
+        delete imageInput.dataset.uploadedUrl;
+        imageInput.value = "";
+    }
+}
+
+function cancelPetEdit() {
+    resetPetForm();
 }
 
 async function previewImage(event) {
@@ -876,17 +931,16 @@ async function loadShelterPets() {
             const shelter = await apiFetch(`${API_BASES.shelter}/${encodeURIComponent(state.session.id)}`);
             const ids = shelter.petProfileIds || [];
             if (ids.length) {
-                pets = await Promise.all(
+                const results = await Promise.allSettled(
                     ids.map((id) => apiFetch(`${API_BASES.pet}/${encodeURIComponent(id)}`))
                 );
+                pets = results
+                    .filter((result) => result.status === "fulfilled")
+                    .map((result) => result.value);
             }
         }
 
-        if (!pets.length) {
-            pets = await apiFetch(`${API_BASES.pet}/available`);
-        }
-
-        target.innerHTML = pets
+        target.innerHTML = pets.length ? pets
             .map(
                 (pet) => `
                 <article class="pet-item">
@@ -896,13 +950,64 @@ async function loadShelterPets() {
                         <p>${pet.species || "-"} - ${pet.breed || "-"}</p>
                         <p>Edad: ${pet.age ?? "-"} | Tamaño: ${pet.size || "-"}</p>
                         <p>${pet.bio || "Sin descripcion"}</p>
+                        <div class="pet-item-actions">
+                            <button class="btn btn-small btn-outline" onclick="startPetEdit('${pet.id}')">Editar</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteShelterPet('${pet.id}')">Eliminar</button>
+                        </div>
                     </div>
                 </article>
             `
             )
-            .join("");
+            .join("") : "<p class='empty-state'>Este refugio aun no tiene mascotas asociadas.</p>";
     } catch (error) {
         target.innerHTML = `<p>No se pudieron cargar mascotas: ${error.message}</p>`;
+    }
+}
+
+async function startPetEdit(petId) {
+    try {
+        const pet = await apiFetch(`${API_BASES.pet}/${encodeURIComponent(petId)}`);
+        state.editingPetId = pet.id;
+        state.editingPetPhotos = pet.photos || [];
+
+        byId("petId").value = pet.id || "";
+        byId("petId").readOnly = true;
+        byId("petName2").value = pet.name || "";
+        byId("petSpecies").value = pet.species || "DOG";
+        byId("petBreed").value = pet.breed || "";
+        byId("petAge").value = pet.age ?? 0;
+        byId("petSex").value = pet.sex || "NO_ESPECIFICADO";
+        byId("petSize").value = pet.size || "Mediano";
+        byId("petEnergyLevel").value = pet.energyLevel || "MEDIO";
+        byId("petKidsCompatible").value = String(Boolean(pet.kidsCompatible));
+        byId("petOtherPetsCompatible").value = String(Boolean(pet.otherPetsCompatible));
+        byId("petBio2").value = pet.bio || "";
+        byId("petSubmitButton").textContent = "Guardar cambios";
+        byId("petCancelEditButton").style.display = "inline-block";
+        setHtml("imagePreview", pet.photos?.[0] ? `<img src="${pet.photos[0]}" alt="Imagen actual">` : "");
+        byId("petForm").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (error) {
+        alert("No se pudo cargar la mascota para editar: " + error.message);
+    }
+}
+
+async function deleteShelterPet(petId) {
+    if (!state.session?.id || !petId) return;
+    if (!confirm("Esta accion eliminara el perfil de la mascota. Deseas continuar?")) return;
+
+    try {
+        await apiFetch(`${API_BASES.shelter}/${encodeURIComponent(state.session.id)}/pets/${encodeURIComponent(petId)}`, {
+            method: "DELETE",
+        });
+        await apiFetch(`${API_BASES.pet}/${encodeURIComponent(petId)}`, {
+            method: "DELETE",
+        });
+        alert("Mascota eliminada correctamente");
+        if (state.editingPetId === petId) resetPetForm();
+        await loadShelterPets();
+        await loadPetCatalog();
+    } catch (error) {
+        alert("No se pudo eliminar la mascota: " + error.message);
     }
 }
 
@@ -925,6 +1030,8 @@ async function createVaccinationCard(event) {
 async function addVaccine(event) {
     event.preventDefault();
     syncVaccinationCardIdsFromPet();
+    populateVeterinarianDefaults();
+
     const petProfileId = byId("vaccinePetId").value.trim();
     if (!petProfileId) {
         alert("Selecciona una mascota");
@@ -932,13 +1039,18 @@ async function addVaccine(event) {
     }
 
     await ensureVaccinationCardExists(petProfileId);
+    const administeredById = byId("vaccineAdminVetId").value.trim() || state.session?.id || "";
+    if (!administeredById) {
+        alert("No se encontro el ID del veterinario en la sesion. Cierra sesion e ingresa de nuevo.");
+        return;
+    }
 
     const payload = {
         id: byId("vaccineId").value.trim(),
         name: byId("vaccineName").value.trim(),
         appliedDate: byId("vaccineAppliedDate").value,
         nextDueDate: byId("vaccineNextDueDate").value || null,
-        administeredById: byId("vaccineAdminVetId").value.trim(),
+        administeredById,
         vaccinationCardId: byId("vaccineCardId").value.trim(),
     };
 
@@ -949,6 +1061,8 @@ async function addVaccine(event) {
         });
         alert("Vacuna registrada correctamente");
         event.target.reset();
+        populateVeterinarianDefaults();
+        syncVaccinationCardIdsFromPet();
     } catch (error) {
         alert("No se pudo registrar vacuna: " + error.message);
     }
@@ -1017,39 +1131,105 @@ async function ensureVaccinationCardExists(petId) {
 function renderVaccinationCard(card) {
     const vaccines = card.vaccines || [];
     const events = card.medicalEvents || [];
+    const pet = state.petMap?.[card.petProfileId] || state.petCatalog.find((item) => item.id === card.petProfileId) || {};
+    const petTitle = pet.name ? `${pet.name} (${card.petProfileId})` : card.petProfileId;
+    const nextDue = card.nextDueDate || vaccines
+        .map((v) => v.nextDueDate)
+        .filter(Boolean)
+        .sort()[0];
 
     return `
-        <article class="section">
-            <h3>Carnet de mascota: ${card.petProfileId}</h3>
-            <p>Proxima fecha sugerida: ${card.nextDueDate || "Sin fecha"}</p>
-            <h4>Vacunas</h4>
-            <ul>
-                ${
-                    vaccines.length
-                        ? vaccines
-                              .map(
-                                  (v) =>
-                                      `<li>${v.name} - aplicada: ${v.appliedDate || "-"} - proxima: ${v.nextDueDate || "-"}</li>`
-                              )
-                              .join("")
-                        : "<li>Sin vacunas registradas</li>"
-                }
-            </ul>
-            <h4>Eventos medicos</h4>
-            <ul>
-                ${
-                    events.length
-                        ? events
-                              .map(
-                                  (e) =>
-                                      `<li>${e.date || "-"} | ${e.eventType || "-"} | ${e.title || "-"} | ${e.description || ""}</li>`
-                              )
-                              .join("")
-                        : "<li>Sin eventos registrados</li>"
-                }
-            </ul>
+        <article class="vaccination-card-view">
+            <div class="vaccination-card-header">
+                <div>
+                    <span class="eyebrow">Carnet digital</span>
+                    <h3>${petTitle || "Mascota sin identificar"}</h3>
+                    <p>${pet.species || "Mascota"}${pet.breed ? ` - ${pet.breed}` : ""}${pet.age !== undefined ? ` - ${pet.age} anios` : ""}</p>
+                </div>
+                <div class="vaccination-summary">
+                    <span>${vaccines.length}</span>
+                    <small>vacunas</small>
+                </div>
+            </div>
+
+            <div class="vaccination-meta-grid">
+                <div>
+                    <span>Proxima dosis</span>
+                    <strong>${formatDisplayDate(nextDue)}</strong>
+                </div>
+                <div>
+                    <span>Eventos medicos</span>
+                    <strong>${events.length}</strong>
+                </div>
+                <div>
+                    <span>ID mascota</span>
+                    <strong>${card.petProfileId || "-"}</strong>
+                </div>
+            </div>
+
+            <div class="vaccination-section">
+                <h4>Vacunas registradas</h4>
+                <div class="vaccination-list">
+                    ${
+                        vaccines.length
+                            ? vaccines
+                                  .map(
+                                      (v) => `
+                                        <div class="vaccination-row">
+                                            <div>
+                                                <strong>${v.name || "Vacuna sin nombre"}</strong>
+                                                <span>Aplicada: ${formatDisplayDate(v.appliedDate)}</span>
+                                            </div>
+                                            <div>
+                                                <span>Proxima</span>
+                                                <strong>${formatDisplayDate(v.nextDueDate)}</strong>
+                                            </div>
+                                        </div>`
+                                  )
+                                  .join("")
+                            : "<p class='empty-state compact'>Aun no hay vacunas registradas para esta mascota.</p>"
+                    }
+                </div>
+            </div>
+
+            <div class="vaccination-section">
+                <h4>Historial medico</h4>
+                <div class="medical-event-list">
+                    ${
+                        events.length
+                            ? events
+                                  .map(
+                                      (e) => `
+                                        <div class="medical-event-row">
+                                            <div class="medical-event-date">${formatDisplayDate(e.date)}</div>
+                                            <div>
+                                                <strong>${e.title || normalizeMedicalEventType(e.eventType)}</strong>
+                                                <span>${normalizeMedicalEventType(e.eventType)}${e.description ? ` - ${e.description}` : ""}</span>
+                                                ${e.vetNotes ? `<small>${e.vetNotes}</small>` : ""}
+                                            </div>
+                                        </div>`
+                                  )
+                                  .join("")
+                            : "<p class='empty-state compact'>Aun no hay eventos medicos registrados.</p>"
+                    }
+                </div>
+            </div>
         </article>
     `;
+}
+
+async function loadAdopterVaccinationCard(event) {
+    event.preventDefault();
+    const petId = byId("adopterCardLookupPetId")?.value?.trim();
+    const list = byId("adopterVaccinationCardsList");
+    if (!petId || !list) return;
+
+    try {
+        const card = await ensureVaccinationCardExists(petId);
+        list.innerHTML = renderVaccinationCard(card);
+    } catch (error) {
+        list.innerHTML = `<p class="empty-state">No se pudo consultar carnet: ${error.message}</p>`;
+    }
 }
 
 async function loadVaccinationCard(event) {
@@ -1277,12 +1457,16 @@ window.logout = logout;
 window.savePreferences = savePreferences;
 window.executeSwipe = executeSwipe;
 window.addPet = addPet;
+window.cancelPetEdit = cancelPetEdit;
+window.startPetEdit = startPetEdit;
+window.deleteShelterPet = deleteShelterPet;
 window.previewImage = previewImage;
 window.toggleNotifications = toggleNotifications;
 window.addHealthRecord = addHealthRecord;
 window.createVaccinationCard = createVaccinationCard;
 window.addVaccine = addVaccine;
 window.loadVaccinationCard = loadVaccinationCard;
+window.loadAdopterVaccinationCard = loadAdopterVaccinationCard;
 window.markNotificationRead = markNotificationRead;
 window.toggleProfileEdit = toggleProfileEdit;
 window.saveAdopterProfile = saveAdopterProfile;

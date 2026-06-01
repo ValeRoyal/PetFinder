@@ -25,4 +25,12 @@ public class MedicalEventClient {
                                                String requesterRole) {
         return proxy.updateVetNotes(eventId, vetNotes, requesterRole);
     }
+
+    public MedicalEventResponseDTO update(String eventId, MedicalEventRequestDTO dto) {
+        return proxy.updateEvent(eventId, dto);
+    }
+
+    public void delete(String eventId) {
+        proxy.deleteEvent(eventId);
+    }
 }

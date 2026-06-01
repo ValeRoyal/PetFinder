@@ -74,7 +74,13 @@ public class Shelter {
     List<String> veterinarianIds = new ArrayList<>();
 
     public void registerPet(String petProfileId) {
-        petProfileIds.add(petProfileId);
+        if (!petProfileIds.contains(petProfileId)) {
+            petProfileIds.add(petProfileId);
+        }
+    }
+
+    public void removePet(String petProfileId) {
+        petProfileIds.remove(petProfileId);
     }
 
     public void registerVeterinarian(String veterinarianId) {

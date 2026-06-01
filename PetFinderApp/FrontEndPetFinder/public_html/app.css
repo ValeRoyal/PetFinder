@@ -609,6 +609,14 @@ body {
     margin: 0.3rem 0;
 }
 
+.pet-item-actions,
+.pet-form-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
 /* ===== Image Preview ===== */
 #imagePreview {
     margin-top: 1rem;
@@ -662,6 +670,154 @@ body {
 
 #vaccinationCardsList .section {
     border: 1px solid var(--gray-light);
+}
+
+.vaccination-card-view {
+    margin-top: 1rem;
+    overflow: hidden;
+    background: white;
+    border: 1px solid var(--gray-light);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.vaccination-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #f0fdf4, #eff6ff);
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.vaccination-card-header h3 {
+    margin: 0.15rem 0 0.25rem;
+    color: var(--dark);
+}
+
+.vaccination-card-header p {
+    margin: 0;
+    color: var(--gray);
+}
+
+.eyebrow {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary);
+}
+
+.vaccination-summary {
+    min-width: 82px;
+    min-height: 82px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.vaccination-summary span {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.vaccination-summary small {
+    color: var(--gray);
+    font-weight: 600;
+}
+
+.vaccination-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.vaccination-meta-grid div {
+    padding: 0.75rem;
+    background: var(--gray-light);
+    border-radius: 10px;
+}
+
+.vaccination-meta-grid span,
+.vaccination-row span,
+.medical-event-row span {
+    display: block;
+    color: var(--gray);
+    font-size: 0.82rem;
+}
+
+.vaccination-meta-grid strong,
+.vaccination-row strong,
+.medical-event-row strong {
+    color: var(--dark);
+}
+
+.vaccination-section {
+    padding: 1rem 1.25rem 1.25rem;
+}
+
+.vaccination-section + .vaccination-section {
+    border-top: 1px solid var(--gray-light);
+}
+
+.vaccination-section h4 {
+    margin: 0 0 0.75rem;
+    color: var(--dark);
+}
+
+.vaccination-list,
+.medical-event-list {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.vaccination-row,
+.medical-event-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.8rem;
+    background: #f8fafc;
+    border: 1px solid var(--gray-light);
+    border-radius: 10px;
+}
+
+.medical-event-row {
+    grid-template-columns: 96px 1fr;
+    align-items: start;
+}
+
+.medical-event-date {
+    padding: 0.35rem 0.5rem;
+    background: white;
+    border-radius: 8px;
+    text-align: center;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+
+.medical-event-row small {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--gray);
+    font-style: italic;
+}
+
+.empty-state.compact {
+    padding: 0.75rem;
+    text-align: left;
 }
 
 /* ===== Adopter Profile Section ===== */

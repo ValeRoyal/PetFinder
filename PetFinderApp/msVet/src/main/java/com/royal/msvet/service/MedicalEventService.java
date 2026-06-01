@@ -66,4 +66,30 @@ public class MedicalEventService implements MedicalEventServiceInterface {
         medicalEventRepository.save(event);
         return MedicalEventResponseDTO.from(event);
     }
+
+    @Override
+    public MedicalEventResponseDTO updateEvent(String eventId, MedicalEventRequestDTO dto) {
+        MedicalEvent event = medicalEventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+        event.setPetProfileId(dto.getPetProfileId());
+        event.setDate(dto.getDate());
+        event.setEventType(dto.getEventType());
+        event.setTitle(dto.getTitle());
+        event.setDescription(dto.getDescription());
+        event.setVetNotes(dto.getVetNotes());
+        event.setRegisteredById(dto.getRegisteredById());
+        event.setRegisteredByRole(dto.getRegisteredByRole());
+        event.setVaccinationCard(
+                vaccinationCardRepository.findById(dto.getVaccinationCardId())
+                        .orElseThrow(() -> new RuntimeException("Carnet no encontrado"))
+        );
+        return MedicalEventResponseDTO.from(medicalEventRepository.save(event));
+    }
+
+    @Override
+    public void deleteEvent(String eventId) {
+        MedicalEvent event = medicalEventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+        medicalEventRepository.delete(event);
+    }
 }

@@ -34,6 +34,19 @@ public class MedicalEventRestController {
         return ResponseEntity.ok(medicalEventClient.getByPet(petProfileId));
     }
 
+    @PutMapping("/{eventId}")
+    public ResponseEntity<MedicalEventResponseDTO> update(
+            @PathVariable String eventId,
+            @RequestBody MedicalEventRequestDTO dto) {
+        return ResponseEntity.ok(medicalEventClient.update(eventId, dto));
+    }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> delete(@PathVariable String eventId) {
+        medicalEventClient.delete(eventId);
+        return ResponseEntity.noContent().build();
+    }
+
     // RF-04.4 — el vet añade sus notas
     // X-Requester-Role en header: "VET" o "ADOPTER"
     @PatchMapping("/{eventId}/vet-notes")

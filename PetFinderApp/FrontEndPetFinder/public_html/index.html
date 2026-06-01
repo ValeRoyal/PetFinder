@@ -383,6 +383,23 @@
                         <h2>Mis matches</h2>
                         <div id="matchesList" class="matches-grid"></div>
                     </section>
+
+                    <section class="section" id="adopterCardSection">
+                        <h2>Carnet de una mascota</h2>
+                        <form onsubmit="loadAdopterVaccinationCard(event)" class="health-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Mascota:</label>
+                                    <select id="adopterCardLookupPetId" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="submit" class="btn btn-secondary full-width">Consultar carnet</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="adopterVaccinationCardsList"></div>
+                    </section>
                 </div>
             </div>
 
@@ -482,7 +499,10 @@
                                 <div id="imagePreview"></div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Registrar mascota</button>
+                            <div class="form-row pet-form-actions">
+                                <button id="petSubmitButton" type="submit" class="btn btn-primary">Registrar mascota</button>
+                                <button id="petCancelEditButton" type="button" class="btn btn-secondary" style="display:none;" onclick="cancelPetEdit()">Cancelar edicion</button>
+                            </div>
                         </form>
                     </section>
 
@@ -571,7 +591,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>ID veterinario que aplica:</label>
-                                    <input type="text" id="vaccineAdminVetId" required>
+                                    <input type="text" id="vaccineAdminVetId" required readonly>
                                 </div>
                             </div>
 
@@ -654,7 +674,7 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=20260601-2"></script>
+    <script type="module" src="app.js?v=20260601-6"></script>
 </body>
 </html>
 

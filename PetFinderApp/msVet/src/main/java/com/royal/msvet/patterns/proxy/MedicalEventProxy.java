@@ -39,4 +39,20 @@ public class MedicalEventProxy implements MedicalEventServiceInterface {
         }
         return realService.updateVetNotes(eventId, vetNotes, requesterRole);
     }
+
+    @Override
+    public MedicalEventResponseDTO updateEvent(String eventId, MedicalEventRequestDTO dto) {
+        if (dto.getRegisteredByRole() == MedicalEventAuthor.ADOPTER
+                && dto.getVetNotes() != null) {
+            throw new SecurityException(
+                    "Un adoptante no puede registrar notas veterinarias"
+            );
+        }
+        return realService.updateEvent(eventId, dto);
+    }
+
+    @Override
+    public void deleteEvent(String eventId) {
+        realService.deleteEvent(eventId);
+    }
 }
