@@ -69,21 +69,21 @@ try {
     $shelterSeeds = @(
         @{
             defaultId = $ShelterId1
-            name = "Refugio Patitas Felices"
-            location = "Quito, Centro"
+            name = "Refugio Adoptame Bogotá"
+            location = "Bogotá, Chapinero"
             email = "shelter1@petfinder.test"
             phone = "099000111"
-            photos = @("https://images.unsplash.com/photo-1558944351-c4e8f4c9f1a9?w=900&auto=format&fit=crop")
-            videos = @("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+            photos = @("uploads/shelter1.jpg")
+            videos = @("https://youtu.be/5b5X_Xex0xw?si=jZJJkLRlTrubusy-")
         },
         @{
             defaultId = $ShelterId2
             name = "Refugio Huellitas Unidas"
-            location = "Quito, Sur"
+            location = "Chía, Cundinamarca"
             email = "shelter2@petfinder.test"
             phone = "099000222"
-            photos = @("https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=900&auto=format&fit=crop")
-            videos = @("https://www.youtube.com/watch?v=aqz-KE-bpKQ")
+            photos = @("uploads/shelter2.jpg")
+            videos = @("https://www.youtube.com/watch?v=T5vhiWswLVA")
         }
     )
 
@@ -119,7 +119,7 @@ try {
         email = "ana.adoptante@petfinder.test"
         password = $AdopterPassword
         phone = "099123123"
-        location = "Quito, Norte"
+        location = "Bogotá"
         housing = "Casa"
         hasKids = $true
         currentPets = @("Gato")
@@ -152,12 +152,12 @@ try {
 
     Write-Step "Creando mascotas de prueba (3 por refugio)"
     $petSeeds = @(
-        @{ id = $PetId1; shelterId = $ShelterId1; name = "Luna"; species = "DOG"; breed = "Golden Retriever"; age = 3; sex = "HEMBRA"; size = "Grande"; energyLevel = "ALTO"; kidsCompatible = $true; otherPetsCompatible = $true; photos = @("https://images.unsplash.com/photo-1633223557410-7d7fcfcf4f3b?w=900&auto=format&fit=crop"); bio = "Alegre, sociable y lista para adopcion." },
-        @{ id = $PetId2; shelterId = $ShelterId1; name = "Milo"; species = "CAT"; breed = "Siames"; age = 2; sex = "MACHO"; size = "Pequeño"; energyLevel = "MEDIO"; kidsCompatible = $true; otherPetsCompatible = $false; photos = @("https://images.unsplash.com/photo-1574158622682-e40e69881006?w=900&auto=format&fit=crop"); bio = "Tranquilo, carinoso y perfecto para interiores." },
-        @{ id = $PetId3; shelterId = $ShelterId1; name = "Toby"; species = "DOG"; breed = "Labrador"; age = 4; sex = "MACHO"; size = "Mediano"; energyLevel = "MEDIO"; kidsCompatible = $true; otherPetsCompatible = $true; photos = @("https://images.unsplash.com/photo-1517849845537-4d257902454a?w=900&auto=format&fit=crop"); bio = "Amigable, obediente y companero ideal para familia." },
-        @{ id = $PetId4; shelterId = $ShelterId2; name = "Nina"; species = "CAT"; breed = "Europeo"; age = 1; sex = "HEMBRA"; size = "Pequeño"; energyLevel = "BAJO"; kidsCompatible = $true; otherPetsCompatible = $true; photos = @("https://images.unsplash.com/photo-1511044568932-338cba0ad803?w=900&auto=format&fit=crop"); bio = "Dulce y tranquila, ideal para apartamento." },
-        @{ id = $PetId5; shelterId = $ShelterId2; name = "Rocky"; species = "DOG"; breed = "Mestizo"; age = 5; sex = "MACHO"; size = "Grande"; energyLevel = "ALTO"; kidsCompatible = $false; otherPetsCompatible = $true; photos = @("https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=900&auto=format&fit=crop"); bio = "Activo y leal, necesita espacio y paseos diarios." },
-        @{ id = $PetId6; shelterId = $ShelterId2; name = "Kira"; species = "CAT"; breed = "Persa"; age = 3; sex = "HEMBRA"; size = "Mediano"; energyLevel = "MEDIO"; kidsCompatible = $true; otherPetsCompatible = $false; photos = @("https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=900&auto=format&fit=crop"); bio = "Cariñosa y elegante, disfruta ambientes tranquilos." }
+        @{ id = $PetId1; shelterId = $ShelterId1; name = "Luna"; species = "DOG"; breed = "Golden Retriever"; age = 3; sex = "HEMBRA"; size = "Grande"; energyLevel = "ALTO"; kidsCompatible = $true; otherPetsCompatible = $true; photos = @("uploads/golden.png"); bio = "Alegre, sociable y lista para adopcion." },
+        @{ id = $PetId2; shelterId = $ShelterId1; name = "Milo"; species = "CAT"; breed = "Siames"; age = 2; sex = "MACHO"; size = "Pequeño"; energyLevel = "MEDIO"; kidsCompatible = $true; otherPetsCompatible = $false; photos = @("uploads/siames.jpg"); bio = "Tranquilo, carinoso y perfecto para interiores." },
+        @{ id = $PetId3; shelterId = $ShelterId1; name = "Toby"; species = "DOG"; breed = "Labrador"; age = 4; sex = "MACHO"; size = "Mediano"; energyLevel = "MEDIO"; kidsCompatible = $true; otherPetsCompatible = $true; photos = @("uploads/labrador.jpg"); bio = "Amigable, obediente y companero ideal para familia." },
+        @{ id = $PetId4; shelterId = $ShelterId2; name = "Nina"; species = "CAT"; breed = "Europeo"; age = 1; sex = "HEMBRA"; size = "Pequeño"; energyLevel = "BAJO"; kidsCompatible = $true; otherPetsCompatible = $true; photos = @("uploads/europeo.jpg"); bio = "Dulce y tranquila, ideal para apartamento." },
+        @{ id = $PetId5; shelterId = $ShelterId2; name = "Rocky"; species = "DOG"; breed = "Mestizo"; age = 5; sex = "MACHO"; size = "Grande"; energyLevel = "ALTO"; kidsCompatible = $false; otherPetsCompatible = $true; photos = @("uploads/mestizo.jpg"); bio = "Activo y leal, necesita espacio y paseos diarios." },
+        @{ id = $PetId6; shelterId = $ShelterId2; name = "Kira"; species = "CAT"; breed = "Persa"; age = 3; sex = "HEMBRA"; size = "Mediano"; energyLevel = "MEDIO"; kidsCompatible = $true; otherPetsCompatible = $false; photos = @("uploads/persa.jpg"); bio = "Cariñosa y elegante, disfruta ambientes tranquilos." }
     )
 
     $created.pets = New-Object System.Collections.ArrayList

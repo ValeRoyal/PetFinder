@@ -46,6 +46,11 @@ public class MatchRestController {
         return ResponseEntity.ok(service.findByAdopter(adopterId));
     }
 
+    @GetMapping("/shelters/{shelterId}")
+    public ResponseEntity<List<MatchResponseDTO>> findByShelter(@PathVariable String shelterId) {
+        return ResponseEntity.ok(service.findByShelter(shelterId));
+    }
+
     @GetMapping("/mutual")
     public ResponseEntity<List<MatchResponseDTO>> findMutualMatches() {
         return ResponseEntity.ok(service.findMutualMatches());

@@ -104,6 +104,13 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
+    public List<MatchResponseDTO> findByShelter(String shelterId) {
+        return repository.findByShelterIdOrderByMatchScoreDesc(shelterId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<MatchResponseDTO> findMutualMatches() {
         return repository.findByStatus(MatchStatus.MUTUAL).stream()
                 .map(this::toResponse)

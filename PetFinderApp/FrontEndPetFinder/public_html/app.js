@@ -14,6 +14,7 @@ const state = {
     session: null,
     role: null,
     pets: [],
+    shelterMatches: [],
     matches: [],
     notifications: [],
     passedPetIds: new Set(),
@@ -231,6 +232,7 @@ function showDashboard(role) {
 
     if (role === "shelter") {
         loadShelterPets();
+        loadShelterMatches();
     }
 
     if (role === "veterinarian" || role === "shelter" || role === "adopter") {
@@ -245,6 +247,7 @@ function logout() {
     state.session = null;
     state.role = null;
     state.pets = [];
+    state.shelterMatches = [];
     state.passedPetIds = new Set();
     state.sheltersMap = {};
     state.sheltersByPetId = {};
@@ -503,6 +506,14 @@ function persistPassedPetId(petId) {
     );
 }
 
+function resetViewedPets() {
+    if (state.session?.id) {
+        localStorage.removeItem(`petfinder_passed_${state.session.id}`);
+    }
+    state.passedPetIds = new Set();
+    loadAvailablePets();
+}
+
 // ─── Pet Discovery ────────────────────────────────────────────────────────────
 
 async function loadAvailablePets() {
@@ -511,10 +522,13 @@ async function loadAvailablePets() {
         await loadSheltersMap();
 
         const allPets = await apiFetch(`${API_BASES.pet}/available`);
-        // Filter out pets the user already swiped on
-        state.pets = (Array.isArray(allPets) ? allPets : []).filter(
-            (pet) => !state.passedPetIds.has(pet.id)
+        const availablePets = (Array.isArray(allPets) ? allPets : []).filter(
+            (pet) => String(pet?.status || "").toUpperCase() === "AVAILABLE"
         );
+
+        // Mostrar siempre las mascotas disponibles para este adoptante.
+        state.pets = availablePets;
+
         loadNextPet();
     } catch (error) {
         console.error("Error cargando mascotas:", error);
@@ -534,7 +548,7 @@ function loadNextPet() {
                 <span class="no-pets-icon">🐾</span>
                 <p>¡Has visto todas las mascotas disponibles!</p>
                 <p>Vuelve pronto para ver nuevos peludos.</p>
-                <button class="btn btn-outline" onclick="loadAvailablePets()">Recargar mascotas</button>
+                <button class="btn btn-outline" onclick="resetViewedPets()">Ver desde cero</button>
             </div>`;
         if (swipeButtons) swipeButtons.style.display = "none";
         return;
@@ -558,6 +572,93 @@ function loadNextPet() {
     byId("petDetails").textContent = `${pet.species || "Mascota"} · ${pet.age ?? "?"} años · ${pet.size || "-"}`;
     byId("petBio").textContent = pet.bio || "Sin descripcion";
     byId("petImage").src = pet.photos?.[0] || pet.image || "https://via.placeholder.com/300x200";
+}
+
+function normalizeValue(value) {
+    return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toUpperCase();
+}
+
+function normalizeSpecies(value) {
+    const v = normalizeValue(value);
+    if (v === "DOG" || v === "PERRO") return "DOG";
+    if (v === "CAT" || v === "GATO") return "CAT";
+    return v;
+}
+
+function normalizeSize(value) {
+    const v = normalizeValue(value);
+    if (v === "PEQUENO" || v === "PEQUENA" || v === "SMALL") return "PEQUENO";
+    if (v === "MEDIANO" || v === "MEDIANA" || v === "MEDIUM") return "MEDIANO";
+    if (v === "GRANDE" || v === "LARGE") return "GRANDE";
+    return v;
+}
+
+function normalizeEnergy(value) {
+    const v = normalizeValue(value);
+    if (v === "LOW") return "BAJO";
+    if (v === "MEDIUM") return "MEDIO";
+    if (v === "HIGH") return "ALTO";
+    return v;
+}
+
+function calculateCompatibilityScore(adopterProfile, pet) {
+    const prefs = adopterProfile?.preferences || {};
+    const weights = {
+        species: 0.3,
+        age: 0.15,
+        size: 0.15,
+        energy: 0.15,
+        kids: 0.125,
+        otherPets: 0.125,
+    };
+
+    const preferredSpecies = Array.isArray(prefs.preferredSpecies)
+        ? prefs.preferredSpecies.map(normalizeSpecies).filter(Boolean)
+        : [];
+    const preferredSizes = Array.isArray(prefs.preferredSizes)
+        ? prefs.preferredSizes.map(normalizeSize).filter(Boolean)
+        : [];
+
+    const petSpecies = normalizeSpecies(pet?.species);
+    const petSize = normalizeSize(pet?.size);
+    const petEnergy = normalizeEnergy(pet?.energyLevel);
+
+    const speciesScore = preferredSpecies.length ? (preferredSpecies.includes(petSpecies) ? 1 : 0) : 1;
+
+    const minAge = Number.isFinite(Number(prefs.minAge)) ? Number(prefs.minAge) : null;
+    const maxAge = Number.isFinite(Number(prefs.maxAge)) ? Number(prefs.maxAge) : null;
+    const petAge = Number(pet?.age);
+    const ageScore =
+        minAge === null || maxAge === null || !Number.isFinite(petAge)
+            ? 1
+            : petAge >= minAge && petAge <= maxAge
+            ? 1
+            : 0;
+
+    const sizeScore = preferredSizes.length ? (preferredSizes.includes(petSize) ? 1 : 0) : 1;
+
+    const preferredEnergy = normalizeEnergy(prefs.energyMatch);
+    const energyScore = preferredEnergy ? (preferredEnergy === petEnergy ? 1 : 0) : 1;
+
+    const kidsPref = typeof prefs.kidsFriendly === "boolean" ? prefs.kidsFriendly : null;
+    const kidsScore = kidsPref === null ? 1 : kidsPref === Boolean(pet?.kidsCompatible) ? 1 : 0;
+
+    const otherPetsPref = typeof prefs.otherPetsFriendly === "boolean" ? prefs.otherPetsFriendly : null;
+    const otherPetsScore = otherPetsPref === null ? 1 : otherPetsPref === Boolean(pet?.otherPetsCompatible) ? 1 : 0;
+
+    const weighted =
+        speciesScore * weights.species +
+        ageScore * weights.age +
+        sizeScore * weights.size +
+        energyScore * weights.energy +
+        kidsScore * weights.kids +
+        otherPetsScore * weights.otherPets;
+
+    return Math.round(weighted * 10000) / 100;
 }
 
 async function executeSwipe(direction) {
@@ -590,6 +691,7 @@ async function executeSwipe(direction) {
 
 async function createMatchForPet(pet, shelter) {
     try {
+        const compatibilityScore = calculateCompatibilityScore(state.session, pet);
         const created = await apiFetch(`${API_BASES.match}/swipes`, {
             method: "POST",
             body: JSON.stringify({
@@ -597,8 +699,8 @@ async function createMatchForPet(pet, shelter) {
                 adopterId: state.session.id,
                 petProfileId: pet.id,
                 shelterId: shelter?.id || "",
-                score: 0.75,
-                shelterApproves: true,
+                score: compatibilityScore,
+                shelterApproves: false,
             }),
         });
 
@@ -903,6 +1005,132 @@ async function loadShelterPets() {
             .join("");
     } catch (error) {
         target.innerHTML = `<p>No se pudieron cargar mascotas: ${error.message}</p>`;
+    }
+}
+
+async function loadShelterMatches() {
+    const target = byId("shelterMatchesList");
+    if (!target || !state.session?.id) return;
+
+    try {
+        const matches = await apiFetch(`${API_BASES.match}/shelters/${encodeURIComponent(state.session.id)}`);
+        const list = Array.isArray(matches) ? matches : [];
+
+        const enriched = await Promise.all(
+            list.map(async (match) => {
+                let adopter = null;
+                let pet = null;
+
+                try {
+                    adopter = await apiFetch(`${API_BASES.adopter}/${encodeURIComponent(match.adopterId)}`);
+                } catch {
+                    adopter = null;
+                }
+
+                try {
+                    pet = await apiFetch(`${API_BASES.pet}/${encodeURIComponent(match.petProfileId)}`);
+                } catch {
+                    pet = null;
+                }
+
+                return { ...match, adopter, pet };
+            })
+        );
+
+        state.shelterMatches = enriched;
+        renderShelterMatches(enriched);
+    } catch (error) {
+        target.innerHTML = `<p class='empty-state'>No se pudieron cargar matches: ${error.message}</p>`;
+    }
+}
+
+function renderShelterMatches(matches) {
+    const target = byId("shelterMatchesList");
+    if (!target) return;
+
+    if (!matches.length) {
+        target.innerHTML = "<p class='empty-state'>Aún no tienes matches con adoptantes.</p>";
+        return;
+    }
+
+    target.innerHTML = matches
+        .map((m) => {
+            const adopter = m.adopter;
+            const petName = m.pet?.name || m.petProfileId || "Mascota";
+            const statusClass = (m.status || "PENDING").toLowerCase();
+            const statusLabel = {
+                MUTUAL: "Match mutuo",
+                PENDING: "Pendiente",
+                REJECTED: "Rechazado",
+                EXPIRED: "Expirado",
+            }[m.status] || m.status;
+
+            const isPending = (m.status || "PENDING") === "PENDING";
+
+            return `
+                <article class="match-card">
+                    <div class="match-card-header">
+                        <h3>🐾 ${petName}</h3>
+                        <span class="match-status match-status--${statusClass}">${statusLabel}</span>
+                    </div>
+                    <div class="match-adopter-info">
+                        <h4>👤 Contacto del adoptante</h4>
+                        <p class="shelter-name">${adopter?.name || "Adoptante no disponible"}</p>
+                        <div class="shelter-contact-grid">
+                            <span>🆔 ${m.adopterId || "-"}</span>
+                            <span>📧 ${adopter?.email ? `<a href="mailto:${adopter.email}">${adopter.email}</a>` : "-"}</span>
+                            <span>📞 ${adopter?.phone || "-"}</span>
+                            <span>📍 ${adopter?.location || "-"}</span>
+                        </div>
+                    </div>
+                    <div class="match-meta">
+                        <span>Score: ${m.matchScore ?? "-"}</span>
+                    </div>
+                    <div class="match-actions">
+                        ${isPending
+                            ? `<button type="button" class="btn btn-success" onclick="approveMatch('${m.id}', '${m.adopterId || ""}', '${petName.replace(/'/g, "\\'")}')">✅ Aprobar match</button>`
+                            : ""}
+                    </div>
+                </article>
+            `;
+        })
+        .join("");
+}
+
+async function approveMatch(matchId, adopterId, petName) {
+    if (!matchId) return;
+    try {
+        await apiFetch(`${API_BASES.match}/${encodeURIComponent(matchId)}/status?status=MUTUAL`, {
+            method: "PATCH",
+        });
+
+        // Notify the adopter
+        if (adopterId) {
+            try {
+                await apiFetch(`${API_BASES.notification}/events`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        id: `NTF-APPROVE-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+                        sourceService: "shelter",
+                        sourceEventId: matchId,
+                        recipientId: adopterId,
+                        recipientEmail: "",
+                        type: "MATCH_APPROVED",
+                        channel: "IN_APP",
+                        subject: "¡Match aprobado!",
+                        content: `El refugio aprobó tu match con ${petName}. ¡Es un match mutuo!`,
+                    }),
+                });
+                await apiFetch(`${API_BASES.notification}/process-pending`, { method: "POST" });
+            } catch (notifErr) {
+                console.warn("No se pudo notificar al adoptante:", notifErr);
+            }
+        }
+
+        alert("✅ Match aprobado correctamente");
+        await loadShelterMatches();
+    } catch (err) {
+        alert("No se pudo aprobar el match: " + err.message);
     }
 }
 
@@ -1287,8 +1515,11 @@ window.markNotificationRead = markNotificationRead;
 window.toggleProfileEdit = toggleProfileEdit;
 window.saveAdopterProfile = saveAdopterProfile;
 window.loadAvailablePets = loadAvailablePets;
+window.resetViewedPets = resetViewedPets;
 window.hideMatchCard = hideMatchCard;
 window.expandMatchCard = expandMatchCard;
 window.viewMatchVaccinationCard = viewMatchVaccinationCard;
 window.loadShelterVaccinationCard = loadShelterVaccinationCard;
 window.deleteNotification = deleteNotification;
+window.approveMatch = approveMatch;
+window.loadMatches = loadMatches;

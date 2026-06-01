@@ -11,6 +11,8 @@ public interface MatchRepository extends JpaRepository<Match, String> {
 
     List<Match> findByAdopterIdOrderByMatchScoreDesc(String adopterId);
 
+    List<Match> findByShelterIdOrderByMatchScoreDesc(String shelterId);
+
     List<Match> findByPetProfileId(String petProfileId);
 
     List<Match> findByStatus(MatchStatus status);
