@@ -1,44 +1,62 @@
 ﻿[
     {
         "name":  "msPet",
-        "pid":  24528,
-        "path":  "C:\\Users\\juand\\IdeaProjects\\PetFinder\\PetFinderApp\\msPet",
-        "startedAt":  "2026-05-31T23:28:06"
+        "pid":  23752,
+        "path":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\msPet",
+        "stdout":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msPet.out.log",
+        "stderr":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msPet.err.log",
+        "runner":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msPet.runner.ps1",
+        "startedAt":  "2026-06-02T13:09:50"
     },
     {
         "name":  "msShelter",
-        "pid":  23848,
-        "path":  "C:\\Users\\juand\\IdeaProjects\\PetFinder\\PetFinderApp\\msShelter",
-        "startedAt":  "2026-05-31T23:28:07"
+        "pid":  19320,
+        "path":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\msShelter",
+        "stdout":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msShelter.out.log",
+        "stderr":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msShelter.err.log",
+        "runner":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msShelter.runner.ps1",
+        "startedAt":  "2026-06-02T13:09:51"
     },
     {
         "name":  "msAdopter",
-        "pid":  26328,
-        "path":  "C:\\Users\\juand\\IdeaProjects\\PetFinder\\PetFinderApp\\msAdopter",
-        "startedAt":  "2026-05-31T23:28:08"
+        "pid":  19376,
+        "path":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\msAdopter",
+        "stdout":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msAdopter.out.log",
+        "stderr":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msAdopter.err.log",
+        "runner":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msAdopter.runner.ps1",
+        "startedAt":  "2026-06-02T13:09:52"
     },
     {
         "name":  "msNotification",
-        "pid":  18156,
-        "path":  "C:\\Users\\juand\\IdeaProjects\\PetFinder\\PetFinderApp\\msNotification",
-        "startedAt":  "2026-05-31T23:28:09"
+        "pid":  26340,
+        "path":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\msNotification",
+        "stdout":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msNotification.out.log",
+        "stderr":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msNotification.err.log",
+        "runner":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msNotification.runner.ps1",
+        "startedAt":  "2026-06-02T13:09:53"
     },
     {
         "name":  "msVet",
-        "pid":  19208,
-        "path":  "C:\\Users\\juand\\IdeaProjects\\PetFinder\\PetFinderApp\\msVet",
-        "startedAt":  "2026-05-31T23:28:10"
+        "pid":  28196,
+        "path":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\msVet",
+        "stdout":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msVet.out.log",
+        "stderr":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msVet.err.log",
+        "runner":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msVet.runner.ps1",
+        "startedAt":  "2026-06-02T13:09:54"
     },
     {
         "name":  "msMatch",
-        "pid":  17996,
-        "path":  "C:\\Users\\juand\\IdeaProjects\\PetFinder\\PetFinderApp\\msMatch",
-        "startedAt":  "2026-05-31T23:28:12"
+        "pid":  23880,
+        "path":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\msMatch",
+        "stdout":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msMatch.out.log",
+        "stderr":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msMatch.err.log",
+        "runner":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp\\.petfinder-logs\\msMatch.runner.ps1",
+        "startedAt":  "2026-06-02T13:09:55"
     },
     {
         "name":  "frontend-proxy",
-        "pid":  24076,
-        "path":  "C:\\Users\\juand\\IdeaProjects\\PetFinder\\PetFinderApp",
-        "startedAt":  "2026-05-31T23:28:13"
+        "pid":  7904,
+        "path":  "C:\\Users\\USUARIO\\Documents\\PetFinder\\PetFinderApp",
+        "startedAt":  "2026-06-02T13:09:56"
     }
 ]
